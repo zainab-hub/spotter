@@ -11,5 +11,14 @@ class PersonRepository {
  List<Person> getAll(){
   return persons;
  }
+Person getById(id) {
 
+  return persons[id];
+}
+void update(item) {
+
+}
+void delete(item) {
+  
+}
 }
