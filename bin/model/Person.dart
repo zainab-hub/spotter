@@ -5,7 +5,3 @@ class Person {
   Person(this.namn,this.personnummer);
 }
 
-class PersonRepository {
-  
-
-}
