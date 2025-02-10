@@ -1,27 +1,41 @@
 import 'package:args/args.dart';
-//import 'model/Person.dart';
-//import 'Repository/PersonRepository.dart';
+import 'model/Person.dart';
+import 'Repository/PersonRepository.dart';
 
 import 'dart:io';
 
 const String version = '0.0.1';
 
 void main(List<String> arguments) {
-  // var personRepository = PersonRepository();
-  mainMenu();
+ var personRepository = PersonRepository();
+ 
+  mainMenu(personRepository);
 }
 
-void mainMenu() {
+void mainMenu(PersonRepository personRepository) {
   stdout.writeln(
       'Welcome to Spotter\nWhat do you want to handle? \n 1.Person \n 2.Vehicle \n 3.ParkingSpace \n 4.Parking \n 5.Close\nChoose alternative between (1-5) ');
   var input = stdin.readLineSync();
   stdout.writeln('You typed: $input');
 
   if (input == '1') {
-    
+   
+
         stdout.writeln(
         'You choosed to handle a person. What do you like to do? \n 1.Create new person \n 2.Show all persons \n 3.Update person \n 4.Delete person \n 5.Go back to main menu ');
+        if (input == '1'){
+          stdout.writeln('Please enter name of person');
+           String? name = stdin.readLineSync();
+           stdout.writeln('Please enter personal number');
+           String? personalNumberAsInput = stdin.readLineSync();
+           // Convert string to integer
+            int personalNumber = int.tryParse(personalNumberAsInput ?? '') ?? 0;
+         
+          Person newPerson = Person(name, personalNumber);
+          personRepository.add(newPerson);
+        }
     }
+  }
      // } else  if (input == '5') {
    // stdout.writeln('Go back to main menu');
    // mainMenu();
