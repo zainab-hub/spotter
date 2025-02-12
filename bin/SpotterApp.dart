@@ -3,6 +3,7 @@ import 'model/Person.dart';
 import 'dart:io';
 
 class SpotterApp {
+  //intiated repository to make sure object only created once
   PersonRepository personRepository = PersonRepository();
 
   void mainMenu() {
