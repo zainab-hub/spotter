@@ -49,6 +49,27 @@ class SpotterApp {
         String? newPerson = stdin.readLineSync();
         oldperson.name = newPerson;
 
+        stdout.writeln('Enter the new personalnumber for the old person');
+        String? newPersonalnumberInput = stdin.readLineSync();
+        int newPersonalnumber = int.tryParse(newPersonalnumberInput ?? '') ?? 0;
+
+        oldperson.personalNumber = newPersonalnumber;
+
+        mainMenu();
+      }
+      if (input == '4') {
+        stdout.writeln('Select number you want to delete');
+        List allpersons = personRepository.getAll();
+        allpersons.asMap().forEach((index, person) {
+          var personIndex = index + 1;
+          stdout.writeln('$personIndex. $person');
+        });
+        //Read choice
+        var input = stdin.readLineSync();
+        int index = int.tryParse(input ?? '') ?? 0;
+        var removeperson = personRepository.getById(index - 1);
+        personRepository.delete(removeperson);
+
         mainMenu();
       }
     }
