@@ -3,18 +3,19 @@ import '../model/Person.dart';
 class PersonRepository {
 
   var persons =<Person>[];
+
   void add(Person person){
-
     persons.add(person);
-
  }
+
  List<Person> getAll(){
   return persons;
  }
-Person getById(id) {
 
+Person getById(id) {
   return persons[id];
 }
+
 void update(Person oldperson , Person newperson) {
   int index = persons.indexOf(oldperson);
   if (index !=-1)

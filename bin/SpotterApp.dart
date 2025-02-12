@@ -25,6 +25,31 @@ class SpotterApp {
 
         Person newPerson = Person(name, personalNumber);
         personRepository.add(newPerson);
+        mainMenu();
+      }
+      if (input == '2') {
+        List allpersons = personRepository.getAll();
+        allpersons.forEach((person) {
+          stdout.writeln(person);
+        });
+        mainMenu();
+      }
+      if (input == '3') {
+        stdout.writeln('Select number you want to update');
+        List allpersons = personRepository.getAll();
+        allpersons.asMap().forEach((index, person) {
+          var personIndex = index + 1;
+          stdout.writeln('$personIndex. $person');
+        });
+        //Read choice
+        var input = stdin.readLineSync();
+        int index = int.tryParse(input ?? '') ?? 0;
+        var oldperson = personRepository.getById(index - 1);
+        stdout.writeln('Enter the new name for the old person');
+        String? newPerson = stdin.readLineSync();
+        oldperson.name = newPerson;
+
+        mainMenu();
       }
     }
 
