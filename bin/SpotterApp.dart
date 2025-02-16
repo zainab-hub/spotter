@@ -1,9 +1,12 @@
 import 'Repository/PersonRepository.dart';
+import 'Repository/VehicleRespository.dart';
 import 'model/Person.dart';
+import 'model/Vehicle.dart';
 import 'dart:io';
 
 class SpotterApp {
   PersonRepository personRepository = PersonRepository();
+  Vehiclerespository vehicleRepository = Vehiclerespository();
 
   void mainMenu() {
     stdout.writeln(
@@ -82,6 +85,27 @@ class SpotterApp {
     else if (input == '2') {
       stdout.writeln(
           'You choosed to handle a vehicle. What do you like to do? \n 1.Create new vehicle \n 2.Show all vehicles \n 3.Update vehicle \n 4.Delete vehicle \n 5.Go back to main menu ');
+          var input = stdin.readLineSync();
+      if (input == '1') {
+        stdout.writeln('Please enter Vehicle Regestrationnumber');
+        String? regestrationNumber = stdin.readLineSync();
+        stdout.writeln('Please enter Vhicle type');
+        String? type = stdin.readLineSync();
+        stdout.writeln('Please enter Vehicle owner');
+        List allpersons = personRepository.getAll();
+        allpersons.asMap().forEach((index, person) {
+          var personIndex = index + 1;
+          stdout.writeln('$personIndex. $person');
+        });
+        var input = stdin.readLineSync();
+        int index = int.tryParse(input ?? '') ?? 0;
+        Person chooseOwner = personRepository.getById(index - 1);
+        Vehicle newVehicle = Vehicle(regestrationNumber,type,chooseOwner) ;
+        vehicleRepository.add(newVehicle);
+        mainMenu();
+      }
+    
+
     } else if (input == '3') {
       stdout.writeln(
           'You choosed to handle a parkingspace. What do you like to do? \n 1.Create new parkingspace \n 2.Show all parkingspaces \n 3.Update parkingspace \n 4.Delete parkingspace \n 5.Go back to main menu ');
