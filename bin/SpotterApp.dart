@@ -1,7 +1,7 @@
-import 'Repository/PersonRepository.dart';
-import 'Repository/VehicleRespository.dart';
-import 'model/Person.dart';
-import 'model/Vehicle.dart';
+import '../shared/Repository/PersonRepository.dart';
+import '../shared/Repository/VehicleRespository.dart';
+import '../shared/model/Person.dart';
+import '../shared/model/Vehicle.dart';
 import 'dart:io';
 
 class SpotterApp {
