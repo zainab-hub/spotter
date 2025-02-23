@@ -29,8 +29,8 @@ void update(Person oldperson , Person newperson) {
   }
 
  // Method to remove an ID by value
-void delete( Person id) {
-   persons.remove(id);
+void delete(var id) {
+  persons.removeAt(id);
 }
 
 }
