@@ -1,15 +1,13 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
-
 import '../model/Person.dart';
-import '../shared.dart';
 
 
-class PersonRepository implements RepositoryInterface<Person> {
+class PersonFileRepository  {
   String path = "./persons.json";
 
-  @override
-  Future<Person> create(person) async {
+  Future<Person> add(person) async {
     File file = File(path);
 
     try {
@@ -25,7 +23,7 @@ class PersonRepository implements RepositoryInterface<Person> {
 
       var json = jsonDecode(content) as List;
 
-      json = [...json, Person.toPersonEntity().toJson()];
+      json = [...json, person.toJson()];
 
       await file.writeAsString(jsonEncode(json));
     } catch (e) {
@@ -36,8 +34,8 @@ class PersonRepository implements RepositoryInterface<Person> {
     return person;
   }
 
-  @override
-  Future<Person> getById(String id) async {
+
+  Future<Person> getById(int id) async {
     File file = File(path);
 
     try {
@@ -51,14 +49,14 @@ class PersonRepository implements RepositoryInterface<Person> {
     List<Person> persons = await getAll();
 
     for (var person in persons) {
-      if (persons.id == id) {
+      if (person.id == id) {
         return person;
       }
     }
     throw Exception("No bag found with id ${id}");
   }
 
-  Future<List<BagEntity>> _getAllEntities() async {
+  Future<List<Person>> getAll() async {
     File file = File(path);
 
     try {
@@ -71,25 +69,15 @@ class PersonRepository implements RepositoryInterface<Person> {
 
     String content = await file.readAsString();
 
-    List<BagEntity> bags = (jsonDecode(content) as List)
-        .map((json) => BagEntity.fromJson(json))
+    List<Person> bags = (jsonDecode(content) as List)
+        .map((json) => Person.fromJson(json))
         .toList();
 
     return bags;
   }
 
-  @override
-  Future<List<Bag>> getAll() async {
-    var entities = await _getAllEntities();
 
-    List<Bag> bags =
-        await Future.wait(entities.map((entity) => entity.toBag()).toList());
-
-    return bags;
-  }
-
-  @override
-  Future<Bag> update(String id, Bag newBag) async {
+  Future<Person> update(Person oldPerson, Person newPerson) async {
     File file = File(path);
 
     try {
@@ -100,24 +88,24 @@ class PersonRepository implements RepositoryInterface<Person> {
       // dont try to create a database file if it exists.
     }
 
-    var entities = await _getAllEntities();
+    var persons = await getAll();
 
-    for (var i = 0; i < entities.length; i++) {
-      if (entities[i].id == id) {
-        entities[i] = newBag.toBagEntity();
+    for (var i = 0; i < persons.length; i++) {
+      if (persons[i].id == oldPerson.id) {
+        persons[i] = newPerson;
 
         await file.writeAsString(
-            jsonEncode(entities.map((bag) => bag.toJson()).toList()));
+            jsonEncode(persons.map((person) => person.toJson()).toList()));
 
-        return newBag;
+        return newPerson;
       }
     }
 
-    throw Exception("No bag found with id ${id}");
+    throw Exception("No bag found with id ${oldPerson.id}");
   }
 
-  @override
-  Future<Bag> delete(String id) async {
+
+  Future<Person> delete(int id) async {
     File file = File(path);
 
     try {
@@ -128,14 +116,14 @@ class PersonRepository implements RepositoryInterface<Person> {
       // dont try to create a database file if it exists.
     }
 
-    var entities = await _getAllEntities();
+    var persons = await getAll();
 
-    for (var i = 0; i < entities.length; i++) {
-      if (entities[i].id == id) {
-        final entity = entities.removeAt(i);
+    for (var i = 0; i < persons.length; i++) {
+      if (persons[i].id == id) {
+        final person = persons.removeAt(i);
         await file.writeAsString(
-            jsonEncode(entities.map((bag) => bag.toJson()).toList()));
-        return await entity.toBag();
+            jsonEncode(persons.map((person) => person.toJson()).toList()));
+        return person;
       }
     }
 

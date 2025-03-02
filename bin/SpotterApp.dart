@@ -32,9 +32,9 @@ class SpotterApp {
       }
       if (input == '2') {
         List allpersons = personRepository.getAll();
-        allpersons.forEach((person) {
+        for (var person in allpersons) {
           stdout.writeln(person);
-        });
+        }
         mainMenu();
       }
       if (input == '3') {

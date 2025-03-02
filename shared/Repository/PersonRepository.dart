@@ -2,7 +2,7 @@ import '../model/Person.dart';
 
 class PersonRepository {
 
-  var persons =<Person>[];
+  var persons = <Person>[];
 
   void add(Person person){
     persons.add(person);

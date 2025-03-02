@@ -1,6 +1,4 @@
-import 'package:args/args.dart';
 import 'SpotterApp.dart';
-import 'dart:io';
 
 const String version = '0.0.1';
 

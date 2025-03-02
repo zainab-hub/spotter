@@ -1,11 +1,13 @@
-import '../../shared/Repository/PersonRepository.dart';
+//import '../../shared/Repository/PersonRepository.dart';
+import '../../shared/Repository/PersonFileRepository.dart';
 import '../../shared/model/Person.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 import 'dart:convert';
 
-PersonRepository repo = PersonRepository();
+//PersonRepository repo = PersonRepository();
+PersonFileRepository repo = PersonFileRepository();
 
 Future<Response> addPersonHandler(Request request) async {
   final data = await request.readAsString();
@@ -21,7 +23,7 @@ Future<Response> addPersonHandler(Request request) async {
 }
 
 Future<Response> getAllPersonHandler(Request request) async {
-  List<Person> persons = repo.getAll();
+  List<Person> persons = await repo.getAll();
 
   final payload = persons.map((e) => e.toJson()).toList();
 
@@ -34,15 +36,13 @@ Future<Response> getAllPersonHandler(Request request) async {
 Future<Response> getPersonHandler(Request request) async {
   String? id = request.params["id"];
 
-  if (id != null) {
-    int idAsInt = int.tryParse(id ?? '') ?? 0;
-    var person = await repo.getById(idAsInt);
+  int idAsInt = int.tryParse(id ?? '') ?? 0;
+  var person = await repo.getById(idAsInt);
 
-    return Response.ok(
-      jsonEncode(person),
-      headers: {'Content-Type': 'application/json'},
-    );
-  }
+  return Response.ok(
+    jsonEncode(person),
+    headers: {'Content-Type': 'application/json'},
+  );
 
   // do better handling
   return Response.badRequest();
@@ -51,20 +51,18 @@ Future<Response> getPersonHandler(Request request) async {
 Future<Response> updatePersonHandler(Request request) async {
   String? id = request.params["id"];
 
-  if (id != null) {
-    int idAsInt = int.tryParse(id ?? '') ?? 0;
+  int idAsInt = int.tryParse(id ?? '') ?? 0;
 
-    final data = await request.readAsString();
-    final json = jsonDecode(data);
-    Person? newPerson = Person.fromJson(json);
-    Person oldperson = repo.getById(idAsInt);
-    repo.update(oldperson, newPerson);
+  final data = await request.readAsString();
+  final json = jsonDecode(data);
+  Person? newPerson = Person.fromJson(json);
+  Person oldperson = await repo.getById(idAsInt);
+  repo.update(oldperson, newPerson);
 
-    return Response.ok(
-      jsonEncode(newPerson),
-      headers: {'Content-Type': 'application/json'},
-    );
-  }
+  return Response.ok(
+    jsonEncode(newPerson),
+    headers: {'Content-Type': 'application/json'},
+  );
 
   // TODO: do better handling
   return Response.badRequest();
@@ -73,16 +71,14 @@ Future<Response> updatePersonHandler(Request request) async {
 Future<Response> deletePersonHandler(Request request) async {
   String? id = request.params["id"];
 
-  if (id != null) {
-    int idAsInt = int.tryParse(id ?? '') ?? 0;
+  int idAsInt = int.tryParse(id ?? '') ?? 0;
 
-    repo.delete(idAsInt);
+  repo.delete(idAsInt);
 
-    return Response.ok(
-      jsonEncode("Removed"),
-      headers: {'Content-Type': 'application/json'},
-    );
-  }
+  return Response.ok(
+    jsonEncode("Removed"),
+    headers: {'Content-Type': 'application/json'},
+  );
 
   // TODO: do better handling
   return Response.badRequest();
