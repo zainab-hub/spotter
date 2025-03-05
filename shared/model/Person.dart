@@ -1,5 +1,3 @@
-// ignore: file_names
-
 class Person {
   int? id;
   String? name;
@@ -13,17 +11,10 @@ class Person {
 
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
-        json['id'] as int,
-        json['name'],
-        json['personalNumber'] as int
-       );
+        json['id'] as int, json['name'], json['personalNumber'] as int);
   }
 
-    Map<String, dynamic> toJson() {
-    return {
-      "id":id,
-      "name": name,
-      "personalNumber": personalNumber
-    };
+  Map<String, dynamic> toJson() {
+    return {"id": id, "name": name, "personalNumber": personalNumber};
   }
 }

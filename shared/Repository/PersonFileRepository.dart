@@ -27,7 +27,7 @@ class PersonFileRepository  {
 
       await file.writeAsString(jsonEncode(json));
     } catch (e) {
-      // TODO: Log error information so Dennis can check it later
+      
       throw Exception("Error writing to file");
     }
 
@@ -53,7 +53,7 @@ class PersonFileRepository  {
         return person;
       }
     }
-    throw Exception("No bag found with id ${id}");
+    throw Exception("No person found with id ${id}");
   }
 
   Future<List<Person>> getAll() async {
@@ -69,11 +69,11 @@ class PersonFileRepository  {
 
     String content = await file.readAsString();
 
-    List<Person> bags = (jsonDecode(content) as List)
+    List<Person> persons = (jsonDecode(content) as List)
         .map((json) => Person.fromJson(json))
         .toList();
 
-    return bags;
+    return persons;
   }
 
 
@@ -101,7 +101,7 @@ class PersonFileRepository  {
       }
     }
 
-    throw Exception("No bag found with id ${oldPerson.id}");
+    throw Exception("No person found with id ${oldPerson.id}");
   }
 
 
@@ -127,6 +127,6 @@ class PersonFileRepository  {
       }
     }
 
-    throw Exception("No bag found with id ${id}");
+    throw Exception("No person found with id ${id}");
   }
 }
