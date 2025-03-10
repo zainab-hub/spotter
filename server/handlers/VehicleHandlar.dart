@@ -48,7 +48,7 @@ Future<Response> getVehicleHandler(Request request) async {
   return Response.badRequest();
 }
 
-Future<Response> updatePersonHandler(Request request) async {
+Future<Response> updateVehicleHandler(Request request) async {
   String? id = request.params["id"];
 
   int idAsInt = int.tryParse(id ?? '') ?? 0;
