@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../handlers/PersonHandler.dart';
+import '../handlers/ParkingHandlar.dart';
 
 import 'package:shelf_router/shelf_router.dart';
 
@@ -22,11 +23,17 @@ class ServerConfig {
     // Configure routes.
     router = Router();
 
-    router.post('/persons', addPersonHandler); // create an item
-    router.get('/persons', getAllPersonHandler); // get all items
-    router.get('/persons/<id>', getPersonHandler); // get specific item
-    router.put('/persons/<id>', updatePersonHandler); // update specific item
-    router.delete('/persons/<id>', deletePersonHandler); // update specific item
+    router.post('/persons', addPersonHandler); 
+    router.get('/persons', getAllPersonHandler); 
+    router.get('/persons/<id>', getPersonHandler); 
+    router.put('/persons/<id>', updatePersonHandler); 
+    router.delete('/persons/<id>', deletePersonHandler); 
+
+    router.post('/parkings', addParkingHandler); 
+    router.get('/parkings', getAllParkingHandler); 
+    router.get('/parking/<id>', getParkingHandler); 
+    router.put('/parkings/<id>', updateParkingHandler); 
+    router.delete('/parkings/<id>', deleteParkingHandler); 
 
    
   }
