@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import '../model/Vehicle.dart';
 
-
-class VehicleFileRepository  {
+class VehicleFileRepository {
   String path = "./vehicles.json";
 
   Future<Vehicle> add(vehicle) async {
@@ -27,13 +25,11 @@ class VehicleFileRepository  {
 
       await file.writeAsString(jsonEncode(json));
     } catch (e) {
-      
       throw Exception("Error writing to file");
     }
 
     return vehicle;
   }
-
 
   Future<Vehicle> getById(int id) async {
     File file = File(path);
@@ -76,7 +72,6 @@ class VehicleFileRepository  {
     return vehicles;
   }
 
-
   Future<Vehicle> update(Vehicle oldVehicle, Vehicle newVehicle) async {
     File file = File(path);
 
@@ -104,7 +99,6 @@ class VehicleFileRepository  {
     throw Exception("No vehicle found with id ${oldVehicle.id}");
   }
 
-
   Future<Vehicle> delete(int id) async {
     File file = File(path);
 
@@ -129,48 +123,4 @@ class VehicleFileRepository  {
 
     throw Exception("No vehicle found with id ${id}");
   }
-}
-
-
-
-
-
-
-
-
-
-
-
-import '../model/Vehicle.dart';
-
-class Vehiclerespository {
-
-  var vehicles = <Vehicle>[];
-  void add(Vehicle vehicle){
-    vehicles.add(vehicle);
-  }
-List<Vehicle> getAll(){
-  return vehicles;
-
-}
-Vehicle getById(id){
-  return vehicles [id];
-}
-void update(Vehicle oldvehicle , Vehicle newvehicle) {
-  int index = vehicles.indexOf(oldvehicle);
-  if (index !=-1)
-  {
-    vehicles[index] = newvehicle; // Replace old vehicle with new vehicle
-  }
-  else {
-    print("Vehicle is not found");
-  }
-
-  }
-
- // Method to remove an ID by value
-void delete( Vehicle id) {
-   vehicles.remove(id);
-}
-
 }

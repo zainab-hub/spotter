@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import '../model/Person.dart';
+import '../model/Parkingspace.dart';
 
 
-class PersonFileRepository  {
-  String path = "./persons.json";
+class ParkingSpaceFileRepository  {
+  String path = "./parkingspaces.json";
 
-  Future<Person> add(person) async {
+  Future<Parkingspace> add(parkingspace) async {
     File file = File(path);
 
     try {
@@ -22,7 +22,7 @@ class PersonFileRepository  {
 
       var json = jsonDecode(content) as List;
 
-      json = [...json, person.toJson()];
+      json = [...json, parkingspace.toJson()];
 
       await file.writeAsString(jsonEncode(json));
     } catch (e) {
@@ -30,11 +30,11 @@ class PersonFileRepository  {
       throw Exception("Error writing to file");
     }
 
-    return person;
+    return parkingspace;
   }
 
 
-  Future<Person> getById(int id) async {
+  Future<Parkingspace> getById(int id) async {
     File file = File(path);
 
     try {
@@ -45,17 +45,17 @@ class PersonFileRepository  {
       // dont try to create a database file if it exists.
     }
 
-    List<Person> persons = await getAll();
+    List<Parkingspace> parkingspaces = await getAll();
 
-    for (var person in persons) {
-      if (person.id == id) {
-        return person;
+    for (var parkingspace in parkingspaces) {
+      if (parkingspace.id == id) {
+        return parkingspace;
       }
     }
-    throw Exception("No person found with id ${id}");
+    throw Exception("No parkingspace found with id ${id}");
   }
 
-  Future<List<Person>> getAll() async {
+  Future<List<Parkingspace>> getAll() async {
     File file = File(path);
 
     try {
@@ -68,15 +68,15 @@ class PersonFileRepository  {
 
     String content = await file.readAsString();
 
-    List<Person> persons = (jsonDecode(content) as List)
-        .map((json) => Person.fromJson(json))
+    List<Parkingspace> parkingspaces = (jsonDecode(content) as List)
+        .map((json) => Parkingspace.fromJson(json))
         .toList();
 
-    return persons;
+    return parkingspaces;
   }
 
 
-  Future<Person> update(Person oldPerson, Person newPerson) async {
+  Future<Parkingspace> update(Parkingspace oldParkingspace, Parkingspace newParkingspace) async {
     File file = File(path);
 
     try {
@@ -87,24 +87,24 @@ class PersonFileRepository  {
       // dont try to create a database file if it exists.
     }
 
-    var persons = await getAll();
+    var parkingspaces = await getAll();
 
-    for (var i = 0; i < persons.length; i++) {
-      if (persons[i].id == oldPerson.id) {
-        persons[i] = newPerson;
+    for (var i = 0; i < parkingspaces.length; i++) {
+      if (parkingspaces[i].id == oldParkingspace.id) {
+        parkingspaces[i] = newParkingspace;
 
         await file.writeAsString(
-            jsonEncode(persons.map((person) => person.toJson()).toList()));
+            jsonEncode(parkingspaces.map((parkingspace) => parkingspace.toJson()).toList()));
 
-        return newPerson;
+        return newParkingspace;
       }
     }
 
-    throw Exception("No person found with id ${oldPerson.id}");
+    throw Exception("No parkingspace found with id ${oldParkingspace.id}");
   }
 
 
-  Future<Person> delete(int id) async {
+  Future<Parkingspace> delete(int id) async {
     File file = File(path);
 
     try {
@@ -115,17 +115,17 @@ class PersonFileRepository  {
       // dont try to create a database file if it exists.
     }
 
-    var persons = await getAll();
+    var parkingspaces = await getAll();
 
-    for (var i = 0; i < persons.length; i++) {
-      if (persons[i].id == id) {
-        final person = persons.removeAt(i);
+    for (var i = 0; i < parkingspaces.length; i++) {
+      if (parkingspaces[i].id == id) {
+        final parkingspace = parkingspaces.removeAt(i);
         await file.writeAsString(
-            jsonEncode(persons.map((person) => person.toJson()).toList()));
-        return person;
+            jsonEncode(parkingspaces.map((parkingspace) => parkingspace.toJson()).toList()));
+        return parkingspace;
       }
     }
 
-    throw Exception("No person found with id ${id}");
+    throw Exception("No parkingspace found with id ${id}");
   }
 }

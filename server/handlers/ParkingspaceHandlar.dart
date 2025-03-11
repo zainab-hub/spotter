@@ -1,29 +1,30 @@
-import '../../shared/Repository/VehicleFileRespository.dart';
-import '../../shared/model/Vehicle.dart';
+import '../../shared/Repository/ParkingspaceFileRepository.dart';
+import '../../shared/model/Parkingspace.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 import 'dart:convert';
 
-VehicleFileRepository repo = VehicleFileRepository();
 
-Future<Response> addVehicleHandler(Request request) async {
+ParkingSpaceFileRepository repo = ParkingSpaceFileRepository();
+
+Future<Response> addParkingspaceHandler(Request request) async {
   final data = await request.readAsString();
   final json = jsonDecode(data);
-  Vehicle vehicle = Vehicle.fromJson(json);
+  Parkingspace parkingspace = Parkingspace.fromJson(json);
 
-  repo.add(vehicle);
+  repo.add(parkingspace);
 
   return Response.ok(
-    jsonEncode(vehicle),
+    jsonEncode(parkingspace),
     headers: {'Content-Type': 'application/json'},
   );
 }
 
-Future<Response> getAllVehicleHandler(Request request) async {
-  List<Vehicle> vehicles = await repo.getAll();
+Future<Response> getAllParkingspaceHandler(Request request) async {
+  List<Parkingspace> parkingspaces = await repo.getAll();
 
-  final payload = vehicles.map((e) => e.toJson()).toList();
+  final payload = parkingspaces.map((e) => e.toJson()).toList();
 
   return Response.ok(
     jsonEncode(payload),
@@ -31,14 +32,14 @@ Future<Response> getAllVehicleHandler(Request request) async {
   );
 }
 
-Future<Response> getVehicleHandler(Request request) async {
+Future<Response> getParkingspaceHandler(Request request) async {
   String? id = request.params["id"];
 
   int idAsInt = int.tryParse(id ?? '') ?? 0;
-  var vehicle = await repo.getById(idAsInt);
+  var parkingspace = await repo.getById(idAsInt);
 
   return Response.ok(
-    jsonEncode(vehicle),
+    jsonEncode(parkingspace),
     headers: {'Content-Type': 'application/json'},
   );
 
@@ -46,27 +47,25 @@ Future<Response> getVehicleHandler(Request request) async {
   return Response.badRequest();
 }
 
-Future<Response> updateVehicleHandler(Request request) async {
+Future<Response> updateParkingspaceHandler(Request request) async {
   String? id = request.params["id"];
 
   int idAsInt = int.tryParse(id ?? '') ?? 0;
 
   final data = await request.readAsString();
   final json = jsonDecode(data);
-  Vehicle? newVehicle = Vehicle.fromJson(json);
-  Vehicle oldVehicle = await repo.getById(idAsInt);
-  repo.update(oldVehicle, newVehicle);
+  Parkingspace? newParkingspace = Parkingspace.fromJson(json);
+  Parkingspace oldparkingspace = await repo.getById(idAsInt);
+  repo.update(oldparkingspace, newParkingspace);
 
   return Response.ok(
-    jsonEncode(newVehicle),
+    jsonEncode(newParkingspace),
     headers: {'Content-Type': 'application/json'},
   );
 
-  // TODO: do better handling
-  return Response.badRequest();
 }
 
-Future<Response> deleteVehicleHandler(Request request) async {
+Future<Response> deleteParkingspaceHandler(Request request) async {
   String? id = request.params["id"];
 
   int idAsInt = int.tryParse(id ?? '') ?? 0;
@@ -78,6 +77,4 @@ Future<Response> deleteVehicleHandler(Request request) async {
     headers: {'Content-Type': 'application/json'},
   );
 
-  // TODO: do better handling
-  return Response.badRequest();
 }
