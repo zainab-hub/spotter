@@ -15,7 +15,7 @@ class Parking {
 
   factory Parking.fromJson(Map<String, dynamic> json) {
     return Parking(
-        json['id'] as int, json['starttime'], json['endtime'], json['vehicle'] as int,json['parkingspaces'] as int);
+        json['id'] as int, json['vehicle'], json['parkingspace'], json['starttime'] as int,json['endtime'] as int);
   }
 
   Map<String, dynamic> toJson() {

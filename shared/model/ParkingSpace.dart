@@ -2,7 +2,7 @@ class Parkingspace {
   String? adress;
   int id;
   int priceperhour;
-  Parkingspace(this.adress, this.id, this.priceperhour);
+  Parkingspace(this.id,this.adress, this.priceperhour);
 
   @override
   String toString() {
@@ -10,7 +10,7 @@ class Parkingspace {
   }
 
   factory Parkingspace.fromJson(Map<String, dynamic> json) {
-    return Parkingspace(json['id'], json['adress'], json['priceperhour']);
+    return Parkingspace(json['id'] as int, json['adress'], json['priceperhour'] as int);
   }
 
   Map<String, dynamic> toJson() {

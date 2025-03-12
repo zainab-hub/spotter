@@ -1,4 +1,4 @@
-//import '../../shared/Repository/PersonRepository.dart';
+
 import '../../shared/Repository/PersonFileRepository.dart';
 import '../../shared/model/Person.dart';
 import 'package:shelf/shelf.dart';
@@ -6,7 +6,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'dart:convert';
 
-//PersonRepository repo = PersonRepository();
+
 PersonFileRepository repo = PersonFileRepository();
 
 Future<Response> addPersonHandler(Request request) async {
@@ -43,9 +43,6 @@ Future<Response> getPersonHandler(Request request) async {
     jsonEncode(person),
     headers: {'Content-Type': 'application/json'},
   );
-
-  // do better handling
-  return Response.badRequest();
 }
 
 Future<Response> updatePersonHandler(Request request) async {
@@ -63,9 +60,6 @@ Future<Response> updatePersonHandler(Request request) async {
     jsonEncode(newPerson),
     headers: {'Content-Type': 'application/json'},
   );
-
-  // TODO: do better handling
-  return Response.badRequest();
 }
 
 Future<Response> deletePersonHandler(Request request) async {
@@ -79,7 +73,4 @@ Future<Response> deletePersonHandler(Request request) async {
     jsonEncode("Removed"),
     headers: {'Content-Type': 'application/json'},
   );
-
-  // TODO: do better handling
-  return Response.badRequest();
 }
