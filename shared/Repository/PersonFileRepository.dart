@@ -52,7 +52,7 @@ class PersonFileRepository  {
         return person;
       }
     }
-    throw Exception("No person found with id ${id}");
+    throw Exception("No person found with id $id");
   }
 
   Future<List<Person>> getAll() async {
@@ -126,6 +126,6 @@ class PersonFileRepository  {
       }
     }
 
-    throw Exception("No person found with id ${id}");
+    throw Exception("No person found with id $id");
   }
 }

@@ -52,7 +52,7 @@ class ParkingSpaceFileRepository  {
         return parkingspace;
       }
     }
-    throw Exception("No parkingspace found with id ${id}");
+    throw Exception("No parkingspace found with id $id");
   }
 
   Future<List<Parkingspace>> getAll() async {
@@ -126,6 +126,6 @@ class ParkingSpaceFileRepository  {
       }
     }
 
-    throw Exception("No parkingspace found with id ${id}");
+    throw Exception("No parkingspace found with id $id");
   }
 }

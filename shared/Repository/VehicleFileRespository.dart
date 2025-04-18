@@ -49,7 +49,7 @@ class VehicleFileRepository {
         return vehicle;
       }
     }
-    throw Exception("No vehicle found with id ${id}");
+    throw Exception("No vehicle found with id $id");
   }
 
   Future<List<Vehicle>> getAll() async {
@@ -121,6 +121,6 @@ class VehicleFileRepository {
       }
     }
 
-    throw Exception("No vehicle found with id ${id}");
+    throw Exception("No vehicle found with id $id");
   }
 }
