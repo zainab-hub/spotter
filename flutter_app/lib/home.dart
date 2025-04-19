@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
 
       // Placeholder action
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Logging in $email')),
+        SnackBar(content: Text('Logging in as $email')),
       );
     }
   }
