@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/model/Person.dart';
+import 'package:flutter_app/repositories/PersonHttpRepository.dart';
 
 class createPersonPage extends StatefulWidget {
   const createPersonPage({super.key});
@@ -10,7 +12,15 @@ class _createPersonState extends State<createPersonPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _personName = TextEditingController();
   final TextEditingController _personalNumber = TextEditingController();
+  final PersonHttpRepository _httpRepository = PersonHttpRepository();
   bool progress = false;
+
+  Future<Person> _submitForm() {
+    int personalNumber = int.parse(_personalNumber.text);
+    final person = Person.create(_personName.text, personalNumber);
+
+    return _httpRepository.add(person);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +52,9 @@ class _createPersonState extends State<createPersonPage> {
                 ),
                 validator:
                     (value) =>
-                        value!.isEmpty ? 'Please enter your password' : null,
+                        value!.isEmpty
+                            ? 'Please enter your personal number'
+                            : null,
               ),
               SizedBox(height: 24),
               progress
@@ -53,6 +65,7 @@ class _createPersonState extends State<createPersonPage> {
                         progress = true;
                       });
                       await Future.delayed(Duration(seconds: 1));
+                      await _submitForm();
                       //Add repo to communicate with server
                       setState(() {
                         progress = false;

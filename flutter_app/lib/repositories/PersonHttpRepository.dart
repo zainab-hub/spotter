@@ -3,13 +3,14 @@ import 'dart:io';
 import '../model/Person.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:flutter/foundation.dart';
 
 
-class PersonFileRepository  {
+class PersonHttpRepository  {
   String path = "./persons.json";
 
   Future<Person> add(person) async {
-    final uri = Uri.parse("http://10.0.2.2:8080/persons");
+    final uri = Uri.parse("${getBaseUrl()}/persons");
 
     Response response = await http.post(uri,
         headers: {'Content-Type': 'application/json'},
@@ -22,7 +23,7 @@ class PersonFileRepository  {
 
 
   Future<Person> getById(int id) async {
-    final uri = Uri.parse("http://10.0.2.2:8080/persons/${id}");
+    final uri = Uri.parse("${getBaseUrl()}/persons/${id}");
 
     Response response = await http.get(
       uri,
@@ -35,7 +36,7 @@ class PersonFileRepository  {
   }
 
   Future<List<Person>> getAll() async {
-   final uri = Uri.parse("http://10.0.2.2:8080/persons");
+   final uri = Uri.parse("${getBaseUrl()}/persons");
     final response = await http.get(
       uri,
       headers: {'Content-Type': 'application/json'},
@@ -48,7 +49,7 @@ class PersonFileRepository  {
 
 
   Future<Person> update(int id, Person person) async {
-   final uri = Uri.parse("http://10.0.2.2:8080/persons/${id}");
+   final uri = Uri.parse("${getBaseUrl()}/persons/${id}");
 
     Response response = await http.put(uri,
         headers: {'Content-Type': 'application/json'},
@@ -61,7 +62,7 @@ class PersonFileRepository  {
 
 
   Future<Person> delete(int id) async {
-     final uri = Uri.parse("http://10.0.2.2:8080/persons/${id}");
+     final uri = Uri.parse("${getBaseUrl()}/persons/$id");
 
     Response response = await http.delete(
       uri,
@@ -71,5 +72,15 @@ class PersonFileRepository  {
     final json = jsonDecode(response.body);
 
     return Person.fromJson(json);
+  }
+  
+  String getBaseUrl() {
+    if (kIsWeb) {
+      return 'http://localhost:8080'; // For web browsers
+    } else if (Platform.isAndroid) {
+      return 'http://10.0.2.2:8080'; // For Android emulators
+    } else {
+      return 'http://localhost:8080'; // iOS simulator or desktop
+    }
   }
 }

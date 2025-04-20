@@ -9,9 +9,17 @@ class Person {
     return 'name: $name, personalNumber: $personalNumber';
   }
 
+  //Auto generat id
+  factory Person.create(name, personalNumber) {
+    return Person(DateTime.now().microsecondsSinceEpoch, name, personalNumber);
+  }
+
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
-        json['id'] as int, json['name'], json['personalNumber'] as int);
+      json['id'] as int,
+      json['name'],
+      json['personalNumber'] as int,
+    );
   }
 
   Map<String, dynamic> toJson() {
