@@ -33,11 +33,14 @@ class _CarViewState extends State<CarView> {
                   subtitle: Text(snapshot.data![index].type),
                   trailing: IconButton(
                     onPressed: () async {
-                      await _httpRepository.delete(snapshot.data![index]);
-                      setState(() {
-                        future = _httpRepository.getAll();
+                      Future.delayed(Duration(milliseconds: 200), () {
+                        setState(() {
+                           _httpRepository.delete(index);
+                          future = _httpRepository.getAll();
+                        });
                       });
                     },
+
                     icon: Icon(Icons.delete),
                   ),
                 );
@@ -56,14 +59,16 @@ class _CarViewState extends State<CarView> {
             context: context,
             builder: (context) {
               String regestrationnumber = "";
-              String type ="";
+              String type = "";
               return AlertDialog(
                 title: Text('Create new Vehicle'),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
-                      decoration: InputDecoration(labelText: 'Regestration Number'),
+                      decoration: InputDecoration(
+                        labelText: 'Regestration Number',
+                      ),
                       onChanged: (value) {
                         regestrationnumber = value;
                       },

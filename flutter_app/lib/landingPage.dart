@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/ParkView.dart';
 import 'CarView.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
 //import 'ParkView.dart';
@@ -8,7 +9,7 @@ LandingPage({super.key});
 
 final ValueNotifier<int> _index = ValueNotifier<int>(0);
 
-final views = [CarView()];
+final views = [CarView(), ParkView()];
 
  @override
   Widget build(BuildContext context) {
@@ -45,31 +46,3 @@ final views = [CarView()];
     );
   }
 }
-
-// //*class _LandingPageState extends State<LandingPage> {
-//   int index = 0;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("Welcome!")),
-//       body: Center(child: views[index]),
-
-//       bottomNavigationBar: BottomNavigationBar(
-//         onTap: (value) {
-//           setState(() {
-//             index = value;
-//           });
-//         },
-//         currentIndex: index,
-//         items: [
-//           BottomNavigationBarItem(icon: Icon(Icons.garage), label: "Cars"),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.local_parking),
-//             label: "Parkings",
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
