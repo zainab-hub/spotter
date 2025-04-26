@@ -33,14 +33,11 @@ class _CarViewState extends State<CarView> {
                   subtitle: Text(snapshot.data![index].type),
                   trailing: IconButton(
                     onPressed: () async {
-                      Future.delayed(Duration(milliseconds: 200), () {
-                        setState(() {
-                           _httpRepository.delete(index);
-                          future = _httpRepository.getAll();
-                        });
+                      await _httpRepository.delete(snapshot.data![index].id);
+                      setState(() {
+                        future = _httpRepository.getAll();
                       });
                     },
-
                     icon: Icon(Icons.delete),
                   ),
                 );

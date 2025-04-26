@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import '../model/Vehicle.dart';
 import 'package:http/http.dart' as http;
@@ -37,9 +38,7 @@ class VehicleHttpRepository {
 
   Future<List<Vehicle>> getAll() async {
     final uri = Uri.parse("${getBaseUrl()}/vehicles");
-    final response = await http.get(
-      uri
-    );
+    final response = await http.get(uri);
 
     final json = jsonDecode(response.body);
 
@@ -61,17 +60,13 @@ class VehicleHttpRepository {
     return Vehicle.fromJson(json);
   }
 
-  Future<Vehicle> delete(int id) async {
+  Future <void> delete(int id) async {
     final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
 
     Response response = await http.delete(
       uri,
       headers: {'Content-Type': 'application/json'},
     );
-
-    final json = jsonDecode(response.body);
-
-    return Vehicle.fromJson(json);
   }
 
   String getBaseUrl() {
