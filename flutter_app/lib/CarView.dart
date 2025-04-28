@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/Vehicle.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
@@ -40,6 +41,40 @@ class _CarViewState extends State<CarView> {
                     },
                     icon: Icon(Icons.delete),
                   ),
+                  onTap: () {
+                    // print("Clicked: ${snapshot.data![index].regestrationnumber}");
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            title: Text("Test Dialog"),
+                            content: Text("This is a test"),
+                          ),
+                    );
+                  },
+                  //     context: context,
+                  //     builder: (context) {
+                  //       final item = snapshot.data![index];
+                  //       return AlertDialog(
+                  //         title: Text('Vehicle Details'),
+                  //         content: Column(
+                  //           mainAxisSize: MainAxisSize.min,
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             Text(
+                  //               'Registration Number: ${item.regestrationnumber}',
+                  //             ),
+                  //             Text('Type: ${item.type}'),
+                  //           ],
+                  //         ),
+                  //         actions: [
+                  //           TextButton(
+                  //             onPressed: () => Navigator.pop(context),
+                  //             child: Text('Close'),
+                  //           ),
+                  //         ],
+                  //       );
+                  //     },
                 );
               },
             );

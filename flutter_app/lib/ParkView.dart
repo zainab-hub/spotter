@@ -15,19 +15,28 @@ class ParkView extends StatefulWidget {
 
 class _ParkViewState extends State<ParkView> {
   late Future<List> _futureParkSpaces;
-  final ParkingSpaceHttpRepository _httpRepository =
-      ParkingSpaceHttpRepository();
+  late Future<List> _futureVehicle;
+  final ParkingSpaceHttpRepository _httpRepository = ParkingSpaceHttpRepository();
+  final VehicleHttpRepository _vehicleHttpRepository = VehicleHttpRepository();
+
+  int? selectedParkingIndex; //Track selected item
+  int? selectedCar;
 
   @override
   void initState() {
     super.initState();
     _futureParkSpaces = _httpRepository.getAll();
+  
+  }
+
+  Future<List<Vehicle>> getVehicles() {
+    return _vehicleHttpRepository.getAll();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Choose parking area')),
+      appBar: AppBar(title: Text('Parking area')),
       body: FutureBuilder(
         future: _futureParkSpaces,
         builder: (context, snapshot) {
@@ -44,44 +53,96 @@ class _ParkViewState extends State<ParkView> {
             itemCount: parkSpace.length,
             itemBuilder: (context, index) {
               final space = parkSpace[index];
+              final isSelected = selectedParkingIndex == index;
               return ListTile(
                 title: Text(space.adress),
                 subtitle: Text(space.priceperhour.toString()),
+                tileColor: isSelected ? Colors.green.withOpacity(0.3) : null,
+                onTap: () {
+                  setState(() {
+                    selectedParkingIndex = index;
+                  });
+                },
               );
             },
           );
         },
       ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () {
+              // Your action when the button is pressed
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Bottom Button Pressed')));
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Start Parking'),
+                    content: FutureBuilder(
+                      future: getVehicles(), 
+                      builder: (context, snapshot){
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const SizedBox(
+                            height: 100,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        } else if (snapshot.hasError) {
+                          return const Text('Error loading cars.');
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Text('No cars available.');
+                        }
+                        List<Vehicle> vehicles = snapshot.data!;
+
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            DropdownButtonFormField(
+                              decoration: const InputDecoration(labelText: "Select your car"),
+                              items: vehicles.map((car) {
+                                return DropdownMenuItem(
+                                  value: car.id,
+                                  child: Text("${car.regestrationnumber} - ${car.type}"),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedCar = value;
+                                });
+                              },
+                              value: selectedCar
+                            )
+                          ],
+                        );
+                      }),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Handle confirm action
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Text('Start Parking'),
+          ),
+        ),
+      ),
     );
   }
 }
-    //     itemCount: ,
-    //     itemBuilder: (context, index) {
-    //       return ListTile(
-    //         leading: Icon(Icons.label),
-    //         title: Text(items[index]),
-    //         trailing: IconButton(
-    //           icon: Icon(Icons.delete),
-    //           onPressed: () {
-    //             // Remove item from list
-    //             setState(() {
-    //               items.removeAt(index);
-    //             });
-    //           },
-    //         ),
-    //       );
-    //     },
-    //   ),
-    //  // floatingActionButton: FloatingActionButton(
-    //    // onPressed: () {
-    //       // Add a new item
-        //  setState(() {
-       //     items.add('Item ${items.length + 1}');
-      //    });
-      //  },
-     //   child: Icon(Icons.add),
-  //    ),
-   
-  
-
-

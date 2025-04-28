@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/ParkView.dart';
 import 'CarView.dart';
+//import 'package:flutter_app/TicketView.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
 //import 'ParkView.dart';
 
@@ -38,6 +39,10 @@ final views = [CarView(), ParkView()];
               BottomNavigationBarItem(
                 icon: Icon(Icons.local_parking_rounded),
                 label: 'Parking',
+              ),
+               BottomNavigationBarItem(
+                icon: Icon(Icons.local_offer_sharp),
+                label: 'Ticket',
               ),
             ],
           ),

@@ -1,7 +1,7 @@
 class Vehicle {
   int id;
-  String? regestrationnumber;
-  String? type;
+  String regestrationnumber;
+  String type;
   int personid;
   Vehicle(this.id, this.regestrationnumber, this.type, this.personid);
 
