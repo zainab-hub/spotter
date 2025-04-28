@@ -21,6 +21,7 @@ class _ParkViewState extends State<ParkView> {
 
   int? selectedParkingIndex; //Track selected item
   int? selectedCar;
+  TimeOfDay? selectedEndTime;
 
   @override
   void initState() {
@@ -82,60 +83,84 @@ class _ParkViewState extends State<ParkView> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Start Parking'),
-                    content: FutureBuilder(
-                      future: getVehicles(), 
-                      builder: (context, snapshot){
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const SizedBox(
-                            height: 100,
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        } else if (snapshot.hasError) {
-                          return const Text('Error loading cars.');
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Text('No cars available.');
-                        }
-                        List<Vehicle> vehicles = snapshot.data!;
+                  return StatefulBuilder(
+                    builder:(context, setState) {
+                      return AlertDialog(
+                        title: Text('Start Parking'),
+                        content: FutureBuilder(
+                          future: getVehicles(), 
+                          builder: (context, snapshot){
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const SizedBox(
+                                height: 100,
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            } else if (snapshot.hasError) {
+                              return const Text('Error loading cars.');
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Text('No cars available.');
+                            }
+                            List<Vehicle> vehicles = snapshot.data!;
 
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            DropdownButtonFormField(
-                              decoration: const InputDecoration(labelText: "Select your car"),
-                              items: vehicles.map((car) {
-                                return DropdownMenuItem(
-                                  value: car.id,
-                                  child: Text("${car.regestrationnumber} - ${car.type}"),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedCar = value;
-                                });
-                              },
-                              value: selectedCar
-                            )
-                          ],
-                        );
-                      }),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(); // Close the dialog
-                        },
-                        child: Text('Cancel'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle confirm action
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('OK'),
-                      ),
-                    ],
-                  );
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                DropdownButtonFormField(
+                                  decoration: const InputDecoration(labelText: "Select your car"),
+                                  items: vehicles.map((car) {
+                                    return DropdownMenuItem(
+                                      value: car.id,
+                                      child: Text("${car.regestrationnumber} - ${car.type}"),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedCar = value;
+                                    });
+                                  },
+                                  value: selectedCar
+                                ),
+                                const SizedBox(height: 20),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    TimeOfDay? time = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now()
+                                    );
+                                    if (time !=null) {
+                                      setState(() {
+                                        selectedEndTime = time;
+                                      });
+                                    }
+                                  },
+                                  child: Text(
+                                    selectedEndTime == null
+                                    ? 'Select End Time'
+                                    : 'End Time: ${selectedEndTime!.format(context)}',
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            child: Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Handle confirm action
+                              print(selectedEndTime);
+                              print(selectedCar);
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                   });
                 },
               );
             },
