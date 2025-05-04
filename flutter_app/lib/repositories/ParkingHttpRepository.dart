@@ -5,10 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
 
-class ParkingFileRepository {
+class ParkingHttpRepository {
   String path = "./parking.json";
 
-  Future<Parking> add(parking) async {
+  Future<Parking> add(Parking parking) async {
     final uri = Uri.parse("${getBaseUrl()}/parkings");
 
     Response response = await http.post(

@@ -25,6 +25,7 @@ class ServerConfig {
     router.post('/persons', addPersonHandler);
     router.get('/persons', getAllPersonHandler);
     router.get('/persons/<id>', getPersonHandler);
+    router.get('/persons/name/<name>', getPersonNameHandler);
     router.put('/persons/<id>', updatePersonHandler);
     router.delete('/persons/<id>', deletePersonHandler);
 

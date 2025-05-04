@@ -1,11 +1,9 @@
-
 import '../../shared/Repository/PersonFileRepository.dart';
 import '../../shared/model/Person.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 import 'dart:convert';
-
 
 PersonFileRepository repo = PersonFileRepository();
 
@@ -38,6 +36,17 @@ Future<Response> getPersonHandler(Request request) async {
 
   int idAsInt = int.tryParse(id ?? '') ?? 0;
   var person = await repo.getById(idAsInt);
+
+  return Response.ok(
+    jsonEncode(person),
+    headers: {'Content-Type': 'application/json'},
+  );
+}
+
+Future<Response> getPersonNameHandler(Request request) async {
+  String? name = request.params["name"];
+
+  var person = await repo.getByName(name!);
 
   return Response.ok(
     jsonEncode(person),

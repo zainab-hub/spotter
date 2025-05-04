@@ -35,6 +35,23 @@ class PersonHttpRepository  {
     return Person.fromJson(json);
   }
 
+   Future<Person?> getByName(name) async {
+    final uri = Uri.parse("${getBaseUrl()}/persons/name/${name}");
+
+    Response response = await http.get(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final json = jsonDecode(response.body);
+
+    if (json != null) {
+      return Person.fromJson(json); 
+    } else {
+    return null;
+    }
+  }
+
   Future<List<Person>> getAll() async {
    final uri = Uri.parse("${getBaseUrl()}/persons");
     final response = await http.get(

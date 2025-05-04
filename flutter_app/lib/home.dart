@@ -1,5 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/createPersonPage.dart';
+import 'package:flutter_app/model/Person.dart';
+import 'package:flutter_app/repositories/PersonHttpRepository.dart';
 import 'landingPage.dart';
 
 void main() {
@@ -27,15 +31,17 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  late String name;
+
   void _login() {
     if (_formKey.currentState!.validate()) {
       String email = _emailController.text;
       String password = _passwordController.text;
 
       // Placeholder action
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Logging in as $email')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Logging in as $email')));
     }
   }
 
@@ -57,44 +63,45 @@ class _LoginPageState extends State<LoginPage> {
                   labelText: 'Name',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your name' : null,
+                validator:
+                    (value) => value!.isEmpty ? 'Please enter your name' : null,
+                onChanged: (value) => name = value,
               ),
               SizedBox(height: 16),
-             // TextFormField(
-               // controller: _passwordController,
-               // obscureText: true,
-               // decoration: InputDecoration(
-                 // labelText: 'Password',
-                 // border: OutlineInputBorder(),
-               // ),
-               // validator: (value) =>
+              // TextFormField(
+              // controller: _passwordController,
+              // obscureText: true,
+              // decoration: InputDecoration(
+              // labelText: 'Password',
+              // border: OutlineInputBorder(),
+              // ),
+              // validator: (value) =>
               //      value!.isEmpty ? 'Please enter your password' : null,
-            //  ),
-             // SizedBox(height: 24),
+              //  ),
+              // SizedBox(height: 24),
               ElevatedButton(
-                onPressed: ()  {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return LandingPage();
-                            },
-                          ),
-                        );
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LandingPage();
                       },
+                    ),
+                  );
+                },
                 child: Text('Login'),
               ),
               SizedBox(height: 16),
-               ElevatedButton(
-                onPressed: ()  {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return createPersonPage();
-                            },
-                          ),
-                        );
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return createPersonPage();
                       },
+                    ),
+                  );
+                },
                 child: Text('New'),
               ),
             ],

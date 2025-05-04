@@ -2,14 +2,16 @@ class Parking {
   int? id;
   String? vehicle;
   String? parkingspace;
-  int? starttime;
-  int? endtime;
+  int starttime;
+  int endtime;
+  int? totalprice;
   Parking(
     this.id,
     this.vehicle,
     this.parkingspace,
     this.starttime,
     this.endtime,
+    this.totalprice,
   );
 
   @override
@@ -18,13 +20,14 @@ class Parking {
   }
 
   //Auto generat id
-  factory Parking.create(vehicle, parkingspace, starttime, endtime) {
+  factory Parking.create(vehicle, parkingspace, starttime, endtime, totalprice) {
     return Parking(
       DateTime.now().microsecondsSinceEpoch,
       vehicle,
       parkingspace,
       starttime,
       endtime,
+      totalprice,
     );
   }
 
@@ -35,6 +38,7 @@ class Parking {
       json['parkingspace'],
       json['starttime'] as int,
       json['endtime'] as int,
+      json['totalprice'] as int,
     );
   }
 
@@ -45,6 +49,7 @@ class Parking {
       "parkingspace": parkingspace,
       "starttime": starttime,
       "endtime": endtime,
+      "totalprice": totalprice,
     };
   }
 }

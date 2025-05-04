@@ -1,1 +1,17 @@
-[{"id":2,"adress":"Sollentuna","priceperhour":40}]
+[
+    {
+        "id": 2,
+        "adress": "Sollentuna",
+        "priceperhour": 40
+    },
+    {
+        "id": 3,
+        "adress": "Kista",
+        "priceperhour": 30
+    },
+    {
+        "id": 4,
+        "adress": "Solna",
+        "priceperhour": 15
+    }
+]

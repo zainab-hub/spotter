@@ -55,6 +55,27 @@ class PersonFileRepository  {
     throw Exception("No person found with id $id");
   }
 
+ Future<Person?> getByName(String name) async {
+    File file = File(path);
+
+    try {
+      await file.create(exclusive: true);
+      await file.writeAsString(jsonEncode([]));
+    } catch (e) {
+      // file already exists
+      // dont try to create a database file if it exists.
+    }
+
+    List<Person> persons = await getAll();
+
+    for (var person in persons) {
+      if (person.name == name) {
+        return person;
+      }
+    }
+    return null;
+  }
+
   Future<List<Person>> getAll() async {
     File file = File(path);
 
