@@ -1,6 +1,7 @@
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter_app/model/Vehicle.dart';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repositories/VehicleHttpRepository.dart';
 
 part 'vehicle_state.dart';

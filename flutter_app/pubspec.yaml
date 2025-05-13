@@ -41,7 +41,7 @@ dependencies:
   provider: ^6.1.2
   mocktail: ^1.0.4
   bloc_test: ^9.1.7
-  flutter_bloc: ^8.1.6
+  equatable: ^2.0.7
 
 dev_dependencies:
   flutter_test:
