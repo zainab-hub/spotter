@@ -1,9 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_app/block/vehicle/vehicle_bloc.dart';
 import 'package:flutter_app/createPersonPage.dart';
-import 'package:flutter_app/model/Person.dart';
-import 'package:flutter_app/repositories/PersonHttpRepository.dart';
+import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'landingPage.dart';
 
 void main() {
@@ -13,10 +12,17 @@ void main() {
 class LoginApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Simple Login',
-      debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => VehicleBloc(repo: VehicleHttpRepository())..add(LoadVehicles()),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Simple Login',
+        debugShowCheckedModeBanner: false,
+        home: LoginPage(),
+      ),
     );
   }
 }

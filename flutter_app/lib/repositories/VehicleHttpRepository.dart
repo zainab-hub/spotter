@@ -10,6 +10,7 @@ class VehicleHttpRepository {
   String path = "./vehicles.json";
 
   Future<Vehicle> add(vehicle) async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/vehicles");
 
     Response response = await http.post(
@@ -24,6 +25,7 @@ class VehicleHttpRepository {
   }
 
   Future<Vehicle> getById(int id) async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
 
     Response response = await http.get(
@@ -37,6 +39,7 @@ class VehicleHttpRepository {
   }
 
   Future<List<Vehicle>> getAll() async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/vehicles");
     final response = await http.get(uri);
 
@@ -47,6 +50,7 @@ class VehicleHttpRepository {
 
   // we will send id instead of old vehicle
   Future<Vehicle> update(int id, Vehicle vehicle) async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
 
     Response response = await http.put(
@@ -61,6 +65,7 @@ class VehicleHttpRepository {
   }
 
   Future <void> delete(int id) async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
 
     Response response = await http.delete(

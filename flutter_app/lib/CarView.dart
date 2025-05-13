@@ -1,71 +1,52 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/Vehicle.dart';
-import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'block/vehicle/vehicle_bloc.dart';
 
 class CarView extends StatefulWidget {
   const CarView({super.key});
-
-  // @override
-  // Widget build(BuildContext context) {
-  // TODO: implement build
-  // throw UnimplementedError();
-  //}
   @override
   State<CarView> createState() => _CarViewState();
 }
 
 class _CarViewState extends State<CarView> {
-  Future future = VehicleHttpRepository().getAll();
-  final VehicleHttpRepository _httpRepository = VehicleHttpRepository();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Car')),
-      body: FutureBuilder(
-        future: future,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
+      body: BlocBuilder<VehicleBloc, VehicleState>(
+        builder: (context, state) {
+          return switch (state) {
+            VehiclesInitial() => Center(
+              child: CircularProgressIndicator(),
+            ),
+            VehiclesLoading() => Center(
+              child: CircularProgressIndicator(),
+            ),
+            VehiclesLoaded(:final vehicles, :final pending) => ListView.builder(
+              itemCount: vehicles.length,
               itemBuilder: (context, index) {
+                Vehicle vehicle = vehicles[index];
+                bool isPending = vehicle.id == pending?.id;
                 return ListTile(
-                  title: Text(snapshot.data![index].regestrationnumber),
-                  subtitle: Text(snapshot.data![index].type),
-                  trailing: IconButton(
+                  title: Text(vehicles[index].regestrationnumber),
+                  subtitle: Text(vehicles[index].type),
+                  trailing: isPending ? CircularProgressIndicator() : IconButton(
                     onPressed: () async {
-                      await _httpRepository.delete(snapshot.data![index].id);
-                      setState(() {
-                        future = _httpRepository.getAll();
-                      });
+                      context.read<VehicleBloc>().add(DeleteVehicle(vehicle: vehicles[index]));
                     },
                     icon: Icon(Icons.delete),
                   ),
-                  //onTap: () {
-
-                  //showDialog(
-                  //  context: context,
-                  //  builder:
-                  //   (context) => AlertDialog(
-                  //   title: Text("Test Dialog"),
-                  //    content: Text("This is a test"),
-                  //   ),
-
-                  // },
                 );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+            }),
+            VehicleError(:final message) => Text(message),
+          };
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          Vehicle? created = await showDialog<Vehicle>(
+          showDialog<Vehicle>(
             context: context,
             builder: (context) {
               String regestrationnumber = "";
@@ -94,31 +75,19 @@ class _CarViewState extends State<CarView> {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-
                     child: Text('Cancel'),
                   ),
-
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(
-                        context,
-                        Vehicle.create(regestrationnumber, type, 1),
-                      );
+                      context.read<VehicleBloc>().add(CreateVehicle(vehicle: Vehicle.create(regestrationnumber, type, 1)));
+                      Navigator.pop(context);
                     },
-
                     child: Text('Create'),
                   ),
                 ],
               );
             },
           );
-          if (created != null) {
-            // dispatch create item event
-            await _httpRepository.add(created);
-            setState(() {
-              future = _httpRepository.getAll();
-            });
-          }
         },
         child: Icon(Icons.add),
       ),
