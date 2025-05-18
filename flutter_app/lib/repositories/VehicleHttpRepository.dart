@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import '../model/Vehicle.dart';
 import 'package:http/http.dart' as http;
@@ -68,7 +67,7 @@ class VehicleHttpRepository {
     await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
 
-    Response response = await http.delete(
+    await http.delete(
       uri,
       headers: {'Content-Type': 'application/json'},
     );
