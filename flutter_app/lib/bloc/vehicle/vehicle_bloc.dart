@@ -23,7 +23,7 @@ class VehicleBloc extends Bloc<VehicleEvent, VehicleState> {
         emit(VehicleError(message: e.toString()));
       }
     });
-  }
+  }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 
   Future<void> create(Vehicle vehicle, Emitter<VehicleState> emit) async {
     List<Vehicle> currenVehicles = getCurrentVehicles();

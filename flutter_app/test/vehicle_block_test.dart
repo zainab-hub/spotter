@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
 import 'package:flutter_app/model/Vehicle.dart';
-import 'package:flutter_app/block/vehicle/vehicle_bloc.dart';
+import 'package:flutter_app/bloc/vehicle/vehicle_bloc.dart';
 
 class MockVehicleRepo extends Mock implements VehicleHttpRepository {}
 

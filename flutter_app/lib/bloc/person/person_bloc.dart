@@ -5,5 +5,6 @@ part 'person_state.dart';
 part 'person_event.dart';
 
 class PersonBloc extends Bloc<PersonEvent,PersonState> {
+  
   PersonBloc(): super(PersonInitial());
 }

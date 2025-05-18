@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/Vehicle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'block/vehicle/vehicle_bloc.dart';
+import 'bloc/vehicle/vehicle_bloc.dart';
 
 class CarView extends StatefulWidget {
   const CarView({super.key});

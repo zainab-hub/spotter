@@ -1,5 +1,5 @@
 class Parking {
-  int? id;
+  int id;
   String? vehicle;
   String? parkingspace;
   int starttime;
