@@ -7,7 +7,6 @@ import 'package:flutter_app/bloc/vehicle/vehicle_bloc.dart';
 
 class MockVehicleRepo extends Mock implements VehicleHttpRepository {}
 
-
 void main() {
   late VehicleBloc vehicleBloc;
   late MockVehicleRepo mockRepo;
@@ -17,7 +16,7 @@ void main() {
 
   final vehicles = [
     Vehicle.create("abc123", "Mazda", 1),
-    Vehicle.create("edc456", "Ford", 1)
+    Vehicle.create("edc456", "Ford", 1),
   ];
 
   setUp(() {
@@ -28,20 +27,25 @@ void main() {
   tearDown(() {
     vehicleBloc.close();
   });
+
+  
   group("create vehicle", () {
     blocTest<VehicleBloc, VehicleState>(
       "create vehicle",
       setUp: () {
         when(() => mockRepo.add(any())).thenAnswer((_) async => vehicle1);
-        when(() => mockRepo.getAll()).thenAnswer((_) async => [...vehicles, vehicle1]);
+        when(
+          () => mockRepo.getAll(),
+        ).thenAnswer((_) async => [...vehicles, vehicle1]);
       },
       build: () => vehicleBloc,
       seed: () => VehiclesLoaded(vehicles: [], pending: null),
       act: (bloc) => bloc.add(CreateVehicle(vehicle: vehicle1)),
-      expect: () => [
-        VehiclesLoaded(vehicles: [vehicle1], pending: vehicle1),
-        VehiclesLoaded(vehicles: [...vehicles, vehicle1]),
-      ],
+      expect:
+          () => [
+            VehiclesLoaded(vehicles: [vehicle1], pending: vehicle1),
+            VehiclesLoaded(vehicles: [...vehicles, vehicle1]),
+          ],
       verify: (_) {
         verify(() => mockRepo.add(vehicle1)).called(1);
         verify(() => mockRepo.getAll()).called(1);
@@ -49,6 +53,25 @@ void main() {
     );
   });
 
-
-
+  group("delete vehicle", () {
+    blocTest<VehicleBloc, VehicleState>(
+      "delete vehicle",
+      setUp: () {
+        when(() => mockRepo.delete(vehicle1.id)).thenAnswer((_) async => {});
+        when(() => mockRepo.getAll()).thenAnswer((_) async => [vehicle2]);
+      },
+      build: () => vehicleBloc,
+      seed: () => VehiclesLoaded(vehicles: [vehicle1, vehicle2], pending: null),
+      act: (bloc) => bloc.add(DeleteVehicle(vehicle: vehicle1)),
+      expect:
+          () => [
+            VehiclesLoaded(vehicles: [vehicle1, vehicle2], pending: vehicle1),
+            VehiclesLoaded(vehicles: [vehicle2]),
+          ],
+      verify: (_) {
+        verify(() => mockRepo.delete(vehicle1.id)).called(1);
+        verify(() => mockRepo.getAll()).called(1);
+      },
+    );
+  });
 }
