@@ -35,6 +35,7 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
 
   Future<void> delete(Emitter<ParkingState> emit, Parking parking) async {
     List<Parking> currentParkings = getCurrentParkings();
+    if (isClosed) return;
     emit(ParkingsLoaded(parkings: currentParkings, pending: parking));
     await repo.delete(parking.id);
     await getAllAndEmitLoaded(emit);

@@ -9,6 +9,7 @@ class ParkingHttpRepository {
   String path = "./parking.json";
 
   Future<Parking> add(Parking parking) async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/parkings");
 
     Response response = await http.post(
@@ -23,6 +24,7 @@ class ParkingHttpRepository {
   }
 
   Future<Parking> getById(int id) async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/parkings/$id");
 
     Response response = await http.get(
@@ -36,6 +38,7 @@ class ParkingHttpRepository {
   }
 
   Future<List<Parking>> getAll() async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/parkings");
     final response = await http.get(
       uri,
@@ -48,6 +51,7 @@ class ParkingHttpRepository {
   }
 
   Future<Parking> update(int id, Parking parking) async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/parkings/$id");
 
     Response response = await http.put(
@@ -61,17 +65,11 @@ class ParkingHttpRepository {
     return Parking.fromJson(json);
   }
 
-  Future<Parking> delete(int id) async {
+  Future<void> delete(int id) async {
+    await Future.delayed(Duration(seconds: 1));
     final uri = Uri.parse("${getBaseUrl()}/parkings/$id");
 
-    Response response = await http.delete(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    final json = jsonDecode(response.body);
-
-    return Parking.fromJson(json);
+    await http.delete(uri, headers: {'Content-Type': 'application/json'});
   }
 
   String getBaseUrl() {
