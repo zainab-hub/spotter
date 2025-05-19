@@ -13,12 +13,9 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
     on<ParkingEvent>((event, emit) async {
       try {
         switch (event) {
-          case LoadParkings():
-            await getAllAndEmitLoaded(emit);
-          case CreateParking(parking: final parking):
-            await create(parking, emit);
-          case DeleteParking(parking: final parking):
-            await delete(emit, parking);
+          case LoadParkings(): await getAllAndEmitLoaded(emit);
+          case CreateParking(parking: final parking): await create(parking, emit);
+          case DeleteParking(parking: final parking): await delete(emit, parking);
         }
       } catch (e) {
         emit(ParkingError(message: e.toString()));
