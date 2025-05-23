@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/parking/parking_bloc.dart';
+import 'package:flutter_app/bloc/parkingspace/parkingspace_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/Parkingspace.dart';
 import '../model/Parking.dart';
 import '../model/Vehicle.dart';
@@ -105,36 +108,25 @@ class _ParkViewState extends State<ParkView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Parking area')),
-      body: FutureBuilder(
-        future: _futureParkSpaces,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading ParkingSpaces'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No ParkingSpaces found'));
-          }
+       body: BlocBuilder<ParkingspaceBloc, ParkingspaceState>(
+        
+        builder: (context, state) {
+          return switch (state) {
+            ParkingspacesInitial() => Center(child: CircularProgressIndicator()),
 
-          final parkSpace = snapshot.data!;
-          return ListView.builder(
-            itemCount: parkSpace.length,
-            itemBuilder: (context, index) {
-              final space = parkSpace[index];
-              final isSelected = selectedParkingIndex == index;
-              return ListTile(
-                title: Text(space.adress),
-                subtitle: Text('${space.priceperhour.toString()} kr'),
-                tileColor: isSelected ? Colors.green.withOpacity(0.3) : null,
-                onTap: () {
-                  setState(() {
-                    selectedParkingIndex = index;
-                    selectedParking = space;
-                  });
-                },
-              );
-            },
-          );
+            ParkingspacesLoading() => Center(child: CircularProgressIndicator()),
+
+            ParkingspacesLoaded(:final parkingspaces, :final pending) => ListView.builder(
+              itemCount: parkingspaces.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(parkingspaces[index].vehicle),
+                  subtitle: Text(ticket(parkingspaces[index])),
+                );
+              },
+            ),
+            ParkingspaceError(:final message) => Text(message),
+          };
         },
       ),
       bottomNavigationBar: Padding(
@@ -244,7 +236,7 @@ class _ParkViewState extends State<ParkView> {
                                 return;
                               }
                               Navigator.of(context).pop();
-                            _parkingHttpRepository.add(createParking());
+                              context.read<ParkingBloc>().add(CreateParking(parking: createParking()));
                               _confirmParking();
                             },
                             child: Text('Confirm'),

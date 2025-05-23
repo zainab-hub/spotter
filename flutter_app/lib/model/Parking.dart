@@ -1,10 +1,10 @@
 class Parking {
   int id;
-  String? vehicle;
-  String? parkingspace;
+  String vehicle;
+  String parkingspace;
   int starttime;
   int endtime;
-  int? totalprice;
+  int totalprice;
   Parking(
     this.id,
     this.vehicle,

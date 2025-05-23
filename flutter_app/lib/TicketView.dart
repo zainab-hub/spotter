@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/parking/parking_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/Parkingspace.dart';
 import '../model/Parking.dart';
 import '../model/Vehicle.dart';
 import 'package:flutter_app/repositories/ParkingHttpRepository.dart';
-import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
-import 'package:flutter_app/repositories/ParkingSpaceHttpRepository.dart';
 
 class TicketView extends StatefulWidget {
   const TicketView({super.key});
@@ -25,24 +25,24 @@ class _TicketViewState extends State<TicketView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Tickets')),
-      body: FutureBuilder(
-        future: future,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
+      body: BlocBuilder<ParkingBloc, ParkingState>(
+        builder: (context, state) {
+          return switch (state) {
+            ParkingsInitial() => Center(child: CircularProgressIndicator()),
+
+            ParkingsLoading() => Center(child: CircularProgressIndicator()),
+
+            ParkingsLoaded(:final parkings, :final pending) => ListView.builder(
+              itemCount: parkings.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(snapshot.data![index].vehicle),
-                  subtitle: Text(ticket(snapshot.data![index])),
+                  title: Text(parkings[index].vehicle),
+                  subtitle: Text(ticket(parkings[index])),
                 );
               },
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
+            ),
+            ParkingError(:final message) => Text(message),
+          };
         },
       ),
     );
