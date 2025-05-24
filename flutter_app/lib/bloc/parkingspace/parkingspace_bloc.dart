@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_app/repositories/ParkingSpaceHttpRepository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_app/repositories/ParkingspaceHttpRepository.dart';
 import 'package:flutter_app/model/Parkingspace.dart';
 
 part 'parkingspace_state.dart';

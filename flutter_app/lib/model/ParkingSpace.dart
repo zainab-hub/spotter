@@ -1,5 +1,5 @@
 class Parkingspace {
-  String? adress;
+  String adress;
   int id;
   int priceperhour;
   Parkingspace(this.id, this.adress, this.priceperhour);

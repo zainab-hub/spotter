@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/parking/parking_bloc.dart';
+import 'package:flutter_app/bloc/parkingspace/parkingspace_bloc.dart';
 import 'package:flutter_app/bloc/vehicle/vehicle_bloc.dart';
 import 'package:flutter_app/createPersonPage.dart';
 import 'package:flutter_app/repositories/ParkingHttpRepository.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
+import 'package:flutter_app/repositories/ParkingSpaceHttpRepository.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'landingPage.dart';
 
@@ -21,7 +24,10 @@ class LoginApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ParkingBloc(repo: ParkingHttpRepository())..add(LoadParkings()),
-        )
+        ),
+        BlocProvider(
+          create: (context) => ParkingspaceBloc(repo: ParkingSpaceHttpRepository())..add(LoadParkingspaces()),
+        ),
       ],
       child: MaterialApp(
         title: 'Simple Login',

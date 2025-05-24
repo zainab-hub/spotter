@@ -5,9 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/Parkingspace.dart';
 import '../model/Parking.dart';
 import '../model/Vehicle.dart';
-import 'package:flutter_app/repositories/ParkingHttpRepository.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
-import 'package:flutter_app/repositories/ParkingSpaceHttpRepository.dart';
 
 class ParkView extends StatefulWidget {
   const ParkView({super.key});
@@ -17,11 +15,7 @@ class ParkView extends StatefulWidget {
 }
 
 class _ParkViewState extends State<ParkView> {
-  late Future<List> _futureParkSpaces;
-  late Future<List> _futureVehicle;
-  final ParkingSpaceHttpRepository _httpRepository = ParkingSpaceHttpRepository();
   final VehicleHttpRepository _vehicleHttpRepository = VehicleHttpRepository();
-  final ParkingHttpRepository _parkingHttpRepository = ParkingHttpRepository();
 
   int? selectedParkingIndex; //Track selected item
   Parkingspace?
@@ -33,7 +27,6 @@ class _ParkViewState extends State<ParkView> {
   @override
   void initState() {
     super.initState();
-    _futureParkSpaces = _httpRepository.getAll();
   }
 
   Future<List<Vehicle>> getVehicles() {
@@ -120,8 +113,8 @@ class _ParkViewState extends State<ParkView> {
               itemCount: parkingspaces.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(parkingspaces[index].vehicle),
-                  subtitle: Text(ticket(parkingspaces[index])),
+                  title: Text(parkingspaces[index].adress),
+                  subtitle: Text('${parkingspaces[index].priceperhour.toString()} kr'),
                 );
               },
             ),
@@ -136,10 +129,6 @@ class _ParkViewState extends State<ParkView> {
           height: 50,
           child: ElevatedButton(
             onPressed: () {
-              // Your action when the button is pressed
-             // ScaffoldMessenger.of(
-              //  context,
-             // ).showSnackBar(SnackBar(content: Text('Bottom Button Pressed')));
               showDialog(
                 context: context,
                 builder: (BuildContext context) {

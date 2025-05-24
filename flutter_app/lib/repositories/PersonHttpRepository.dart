@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
 
-
 class PersonHttpRepository  {
   String path = "./persons.json";
 
