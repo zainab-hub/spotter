@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/ParkView.dart';
-import 'package:flutter_app/TicketView.dart';
-import 'CarView.dart';
+import 'package:flutter_app/views/park_view.dart';
+import 'package:flutter_app/views/ticket_view.dart';
+import 'car_view.dart';
 //import 'package:flutter_app/TicketView.dart';
 //import 'ParkView.dart';
 

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/parking/parking_bloc.dart';
 import 'package:flutter_app/bloc/parkingspace/parkingspace_bloc.dart';
 import 'package:flutter_app/bloc/vehicle/vehicle_bloc.dart';
-import 'package:flutter_app/createPersonPage.dart';
+import 'package:flutter_app/views/create_person_view.dart';
 import 'package:flutter_app/repositories/ParkingHttpRepository.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
 import 'package:flutter_app/repositories/ParkingSpaceHttpRepository.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'landingPage.dart';
+import 'views/landing_view.dart';
 
 void main() {
   runApp(LoginApp());
