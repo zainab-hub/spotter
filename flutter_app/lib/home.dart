@@ -6,11 +6,14 @@ import 'package:flutter_app/views/create_person_view.dart';
 import 'package:flutter_app/repositories/ParkingHttpRepository.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
 import 'package:flutter_app/repositories/ParkingSpaceHttpRepository.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'views/landing_view.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(LoginApp());
 }
 
@@ -20,13 +23,22 @@ class LoginApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => VehicleBloc(repo: VehicleHttpRepository())..add(LoadVehicles()),
+          create:
+              (context) =>
+                  VehicleBloc(repo: VehicleHttpRepository())
+                    ..add(LoadVehicles()),
         ),
         BlocProvider(
-          create: (context) => ParkingBloc(repo: ParkingHttpRepository())..add(LoadParkings()),
+          create:
+              (context) =>
+                  ParkingBloc(repo: ParkingHttpRepository())
+                    ..add(LoadParkings()),
         ),
         BlocProvider(
-          create: (context) => ParkingspaceBloc(repo: ParkingSpaceHttpRepository())..add(LoadParkingspaces()),
+          create:
+              (context) =>
+                  ParkingspaceBloc(repo: ParkingSpaceHttpRepository())
+                    ..add(LoadParkingspaces()),
         ),
       ],
       child: MaterialApp(
@@ -77,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
                 validator:
@@ -85,17 +97,17 @@ class _LoginPageState extends State<LoginPage> {
                 onChanged: (value) => name = value,
               ),
               SizedBox(height: 16),
-              // TextFormField(
-              // controller: _passwordController,
-              // obscureText: true,
-              // decoration: InputDecoration(
-              // labelText: 'Password',
-              // border: OutlineInputBorder(),
-              // ),
-              // validator: (value) =>
-              //      value!.isEmpty ? 'Please enter your password' : null,
-              //  ),
-              // SizedBox(height: 24),
+               TextFormField(
+               controller: _passwordController,
+               obscureText: true,
+               decoration: InputDecoration(
+               labelText: 'Password',
+               border: OutlineInputBorder(),
+               ),
+               validator: (value) =>
+                    value!.isEmpty ? 'Please enter your password' : null,
+                ),
+               SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(

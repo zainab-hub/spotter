@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "417950745661",
+    "project_id": "spotter-5f58c",
+    "storage_bucket": "spotter-5f58c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417950745661:android:fe6b296878aed8c0545654",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9fbVQBWKzaXK7bL_tpaUvkcImyuq9qpg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
