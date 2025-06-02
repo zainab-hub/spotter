@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/auth/auth_bloc.dart';
 import 'package:flutter_app/bloc/parking/parking_bloc.dart';
 import 'package:flutter_app/bloc/parkingspace/parkingspace_bloc.dart';
 import 'package:flutter_app/bloc/vehicle/vehicle_bloc.dart';
@@ -40,6 +41,7 @@ class LoginApp extends StatelessWidget {
                   ParkingspaceBloc(repo: ParkingSpaceHttpRepository())
                     ..add(LoadParkingspaces()),
         ),
+        BlocProvider(create: (context) => AuthBloc()),
       ],
       child: MaterialApp(
         title: 'Simple Login',
@@ -97,17 +99,18 @@ class _LoginPageState extends State<LoginPage> {
                 onChanged: (value) => name = value,
               ),
               SizedBox(height: 16),
-               TextFormField(
-               controller: _passwordController,
-               obscureText: true,
-               decoration: InputDecoration(
-               labelText: 'Password',
-               border: OutlineInputBorder(),
-               ),
-               validator: (value) =>
-                    value!.isEmpty ? 'Please enter your password' : null,
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
                 ),
-               SizedBox(height: 24),
+                validator:
+                    (value) =>
+                        value!.isEmpty ? 'Please enter your password' : null,
+              ),
+              SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(

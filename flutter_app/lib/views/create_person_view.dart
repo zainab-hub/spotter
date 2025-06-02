@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/model/Person.dart';
-import 'package:flutter_app/repositories/PersonHttpRepository.dart';
+import 'package:flutter_app/bloc/auth/auth_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class createPersonPage extends StatefulWidget {
   const createPersonPage({super.key});
@@ -11,16 +12,9 @@ class createPersonPage extends StatefulWidget {
 class _createPersonState extends State<createPersonPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _personName = TextEditingController();
-  final TextEditingController _personalNumber = TextEditingController();
-  final PersonHttpRepository _httpRepository = PersonHttpRepository();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
   bool progress = false;
-
-  Future<Person> _submitForm() {
-    int personalNumber = int.parse(_personalNumber.text);
-    final person = Person.create(_personName.text, personalNumber);
-
-    return _httpRepository.add(person);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,40 +38,84 @@ class _createPersonState extends State<createPersonPage> {
               ),
               SizedBox(height: 16),
               TextFormField(
-                controller: _personalNumber,
-                obscureText: true,
+                controller: _email,
+                obscureText: false,
                 decoration: InputDecoration(
-                  labelText: 'Personal Number',
+                  labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
                 validator:
                     (value) =>
-                        value!.isEmpty
-                            ? 'Please enter your personal number'
-                            : null,
+                        value!.isEmpty ? 'Please enter your email' : null,
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _password,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                validator:
+                    (value) =>
+                        value!.isEmpty ? 'Please enter your password' : null,
               ),
               SizedBox(height: 24),
-              progress
-                  ? CircularProgressIndicator()
-                  : ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        progress = true;
-                      });
-                      await Future.delayed(Duration(seconds: 1));
-                      await _submitForm();
-                      //Add repo to communicate with server
-                      setState(() {
-                        progress = false;
-                      });
-                      if (context.mounted) {
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  return switch (state) {
+                    AuthInitial() => ElevatedButton(
+                      child: Text('Create!'),
+                      onPressed: () async {
+                        context.read<AuthBloc>().register(
+                          email: _email.text,
+                          name: _personName.text,
+                          password: _password.text,
+                        );
+                      },
+                    ),
+
+                    AuthNotAuth() => ElevatedButton(
+                      child: Text('Create!'),
+                      onPressed: () async {
+                        context.read<AuthBloc>().register(
+                          email: _email.text,
+                          name: _personName.text,
+                          password: _password.text,
+                        );
+                      },
+                    ),
+                    AuthSuccess() => ElevatedButton(
+                      child: Text('Create!'),
+                      onPressed: () async {
+                        context.read<AuthBloc>().register(
+                          email: _email.text,
+                          name: _personName.text,
+                          password: _password.text,
+                        );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Person created!')),
                         );
-                      }
-                    },
-                    child: Text('Create!'),
-                  ),
+                      },
+                    ),
+
+                    AuthInProgress() => CircularProgressIndicator(),
+                    AuthFailure(:final error) => ElevatedButton(
+                      child: Text('Create!'),
+                      onPressed: () async {
+                        context.read<AuthBloc>().register(
+                          email: _email.text,
+                          name: _personName.text,
+                          password: _password.text,
+                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(error)));
+                      },
+                    ),
+                  };
+                },
+              ),
             ],
           ),
         ),
