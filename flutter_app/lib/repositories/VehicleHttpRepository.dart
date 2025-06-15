@@ -4,73 +4,59 @@ import '../model/Vehicle.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VehicleHttpRepository {
   String path = "./vehicles.json";
 
   Future<Vehicle> add(vehicle) async {
-    await Future.delayed(Duration(seconds: 1));
-    final uri = Uri.parse("${getBaseUrl()}/vehicles");
-
-    Response response = await http.post(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(vehicle.toJson()),
-    );
-
-    final json = jsonDecode(response.body);
-
-    return Vehicle.fromJson(json);
+    await FirebaseFirestore.instance.collection("vehicle").doc(vehicle.id).set({
+      "id": vehicle.id,
+      "regestrationnumber": vehicle.regestrationnumber,
+      "type": vehicle.type,
+      "personid": vehicle.personid,
+    });
+    return vehicle;
   }
 
-  Future<Vehicle> getById(int id) async {
-    await Future.delayed(Duration(seconds: 1));
-    final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
+  Future<Vehicle> getById(String id) async {
+    final document =
+        await FirebaseFirestore.instance.collection("vehicle").doc(id).get();
 
-    Response response = await http.get(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    final json = jsonDecode(response.body);
-
+    final json = document.data();
+    if (json == null) {
+      throw Exception('Vehicle not found');
+    }
     return Vehicle.fromJson(json);
   }
 
   Future<List<Vehicle>> getAll() async {
-    await Future.delayed(Duration(seconds: 1));
-    final uri = Uri.parse("${getBaseUrl()}/vehicles");
-    final response = await http.get(uri);
+     final snapshot =
+        await FirebaseFirestore.instance.collection("vehicle").get();
 
-    final json = jsonDecode(response.body);
-
-    return (json as List).map((vehicle) => Vehicle.fromJson(vehicle)).toList();
-  }
+    return snapshot.docs.map((doc) => Vehicle.fromJson(doc.data())).toList();
+   }
 
   // we will send id instead of old vehicle
-  Future<Vehicle> update(int id, Vehicle vehicle) async {
-    await Future.delayed(Duration(seconds: 1));
-    final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
+ // Future<Vehicle> update(int id, Vehicle vehicle) async {
+ //   await Future.delayed(Duration(seconds: 1));
+ //   final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
 
-    Response response = await http.put(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(vehicle.toJson()),
-    );
+ //   Response response = await http.put(
+  //    uri,
+   //   headers: {'Content-Type': 'application/json'},
+   //   body: jsonEncode(vehicle.toJson()),
+   // );
 
-    final json = jsonDecode(response.body);
+   // final json = jsonDecode(response.body);
 
-    return Vehicle.fromJson(json);
-  }
+  //  return Vehicle.fromJson(json);
+//  }
 
-  Future <void> delete(int id) async {
-    await Future.delayed(Duration(seconds: 1));
-    final uri = Uri.parse("${getBaseUrl()}/vehicles/$id");
-
-    await http.delete(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-    );
+  Future <Vehicle> delete(String id) async {
+  final vehicle = getById(id);
+    await FirebaseFirestore.instance.collection("vehicle").doc(id).delete();
+    return vehicle;
   }
 
   String getBaseUrl() {

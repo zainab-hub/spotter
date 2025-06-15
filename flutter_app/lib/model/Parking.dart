@@ -1,5 +1,5 @@
 class Parking {
-  int id;
+  String id;
   String vehicle;
   String parkingspace;
   int starttime;
@@ -22,7 +22,7 @@ class Parking {
   //Auto generat id
   factory Parking.create(vehicle, parkingspace, starttime, endtime, totalprice) {
     return Parking(
-      DateTime.now().microsecondsSinceEpoch,
+      DateTime.now().microsecondsSinceEpoch.toString(),
       vehicle,
       parkingspace,
       starttime,
@@ -33,7 +33,7 @@ class Parking {
 
   factory Parking.fromJson(Map<String, dynamic> json) {
     return Parking(
-      json['id'] as int,
+      json['id'] as String,
       json['vehicle'],
       json['parkingspace'],
       json['starttime'] as int,

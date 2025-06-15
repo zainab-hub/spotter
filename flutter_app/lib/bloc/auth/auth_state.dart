@@ -12,7 +12,8 @@ final class AuthNotAuth extends AuthState {
 
 final class AuthSuccess extends AuthState {
   final String uid;
-  AuthSuccess(this.uid);
+  final String name;
+  AuthSuccess(this.uid, this.name);
 }
 
 final class AuthInProgress extends AuthState {

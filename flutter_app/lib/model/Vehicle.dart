@@ -1,5 +1,5 @@
 class Vehicle {
-  int id;
+  String id;
   String regestrationnumber;
   String type;
   int personid;
@@ -13,7 +13,7 @@ class Vehicle {
   //Auto generat id
   factory Vehicle.create(regestrationnumber, type, personid) {
     return Vehicle(
-      DateTime.now().microsecondsSinceEpoch,
+      DateTime.now().microsecondsSinceEpoch.toString(),
       regestrationnumber,
       type,
       personid,

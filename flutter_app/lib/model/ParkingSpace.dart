@@ -1,6 +1,6 @@
 class Parkingspace {
   String adress;
-  int id;
+  String id;
   int priceperhour;
   Parkingspace(this.id, this.adress, this.priceperhour);
 
@@ -12,14 +12,14 @@ class Parkingspace {
   //Auto generat id
   factory Parkingspace.create(adress, priceperhour) {
     return Parkingspace(
-      DateTime.now().microsecondsSinceEpoch,
+      DateTime.now().microsecondsSinceEpoch.toString(),
       adress,
       priceperhour,
     );
   }
   factory Parkingspace.fromJson(Map<String, dynamic> json) {
     return Parkingspace(
-      json['id'] as int,
+      json['id'] as String,
       json['adress'],
       json['priceperhour'] as int,
     );

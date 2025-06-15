@@ -18,7 +18,7 @@ class _ParkViewState extends State<ParkView> {
   int? selectedParkingIndex; //Track selected item
   Parkingspace?
   selectedParking; // Parkingspace har only number 1, 2 (index). We want to name of parking space instead like "Sollentuna"
-  int? selectedCar;
+  String? selectedCar;
   Vehicle? selectedVehicle;
   TimeOfDay? selectedEndTime;
 

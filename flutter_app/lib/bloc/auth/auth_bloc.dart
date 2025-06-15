@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_app/model/Person.dart';
+import 'package:flutter_app/repositories/PersonHttpRepository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthInitial()) {
+  final PersonHttpRepository repo;
+
+  AuthBloc({required this.repo}) : super(AuthInitial()) {
     on<AuthEvent>((event, emit) async {
       switch (event) {
         case AuthLogin(:var email, :var password):
@@ -20,6 +24,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             if (user == null) {
               throw Exception("No user found");
             }
+
+            Person person = await repo.getById(user.uid);
+
+            emit(AuthSuccess(user.uid, person.name));
           } on FirebaseAuthException catch (e) {
             if (e.code == 'user-not-found') {
               emit(AuthFailure('No user found for that email.'));
@@ -48,12 +56,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               throw Exception("No user found");
             }
 
-            await FirebaseFirestore.instance
-                .collection("person")
-                .doc(user.uid)
-                .set({"id": user.uid, "email": email, "name": name});
-                
-            emit(AuthSuccess(user.uid));
+           await repo.add(Person(user.uid, name, email));
+
+            emit(AuthSuccess(user.uid, name));
           } on FirebaseAuthException catch (e) {
             print(e);
             if (e.code == 'weak-password') {
@@ -75,7 +80,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             FirebaseAuth.instance.authStateChanges(),
             onData: (user) {
               if (user != null) {
-                return AuthSuccess(user.uid);
+                return AuthSuccess(user.uid, '');
               } else {
                 return AuthNotAuth();
               }

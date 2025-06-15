@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../model/Parkingspace.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -9,72 +11,53 @@ class ParkingSpaceHttpRepository {
   String path = "./parkingspace.json";
 
   Future<Parkingspace> add(parkingspace) async {
-    final uri = Uri.parse("${getBaseUrl()}/parkingspaces");
-
-    Response response = await http.post(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(parkingspace.toJson()),
-    );
-
-    final json = jsonDecode(response.body);
-
-    return Parkingspace.fromJson(json);
+  await FirebaseFirestore.instance.collection("parkingspace").doc(parkingspace.id).set({
+      "id": parkingspace.id,
+      "adress": parkingspace.adress,
+      "priceperhour": parkingspace.priceperhour,
+    });
+    return parkingspace;
   }
 
-  Future<Parkingspace> getById(int id) async {
-    final uri = Uri.parse("${getBaseUrl()}/parkingspaces/$id");
+  Future<Parkingspace> getById(String id) async {
+   final document =
+        await FirebaseFirestore.instance.collection("parkingspace").doc(id).get();
 
-    Response response = await http.get(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    final json = jsonDecode(response.body);
-
+    final json = document.data();
+    if (json == null) {
+      throw Exception('parkingspace not found');
+    }
     return Parkingspace.fromJson(json);
   }
 
   Future<List<Parkingspace>> getAll() async {
-    final uri = Uri.parse("${getBaseUrl()}/parkingspaces");
-    final response = await http.get(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-    );
+    final snapshot =
+        await FirebaseFirestore.instance.collection("parkingspace").get();
 
-    final json = jsonDecode(response.body);
-
-    return (json as List).map((person) => Parkingspace.fromJson(person)).toList();
+    return snapshot.docs.map((doc) => Parkingspace.fromJson(doc.data())).toList();
   }
 
-  Future<Parkingspace> update(
-    int id,
-    Parkingspace parkingspace,
-  ) async {
-    final uri = Uri.parse("${getBaseUrl()}/parkingspaces/$id");
+//  Future<Parkingspace> update(
+ //  int id,
+//    Parkingspace parkingspace,
+  //) async {
+   // final uri = Uri.parse("${getBaseUrl()}/parkingspaces/$id");
 
-    Response response = await http.put(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(parkingspace.toJson()),
-    );
+   // Response response = await http.put(
+   //   uri,
+   //   headers: {'Content-Type': 'application/json'},
+    //  body: jsonEncode(parkingspace.toJson()),
+  //  );
 
-    final json = jsonDecode(response.body);
+  //  final json = jsonDecode(response.body);
 
-    return Parkingspace.fromJson(json);
-  }
+  //  return Parkingspace.fromJson(json);
+ // }
 
-  Future<Parkingspace> delete(int id) async {
-    final uri = Uri.parse("${getBaseUrl()}/parkingspaces/$id");
-
-    Response response = await http.delete(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    final json = jsonDecode(response.body);
-
-    return Parkingspace.fromJson(json);
+  Future<Parkingspace> delete(String id) async {
+  final vehicle = getById(id);
+    await FirebaseFirestore.instance.collection("parkingspace").doc(id).delete();
+    return vehicle;
   }
 
   String getBaseUrl() {

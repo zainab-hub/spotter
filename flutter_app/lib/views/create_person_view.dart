@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/auth/auth_bloc.dart';
+import 'package:flutter_app/home.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -61,60 +62,51 @@ class _createPersonState extends State<createPersonPage> {
                         value!.isEmpty ? 'Please enter your password' : null,
               ),
               SizedBox(height: 24),
-              BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  return switch (state) {
-                    AuthInitial() => ElevatedButton(
-                      child: Text('Create!'),
-                      onPressed: () async {
-                        context.read<AuthBloc>().register(
-                          email: _email.text,
-                          name: _personName.text,
-                          password: _password.text,
-                        );
-                      },
-                    ),
-
-                    AuthNotAuth() => ElevatedButton(
-                      child: Text('Create!'),
-                      onPressed: () async {
-                        context.read<AuthBloc>().register(
-                          email: _email.text,
-                          name: _personName.text,
-                          password: _password.text,
-                        );
-                      },
-                    ),
-                    AuthSuccess() => ElevatedButton(
-                      child: Text('Create!'),
-                      onPressed: () async {
-                        context.read<AuthBloc>().register(
-                          email: _email.text,
-                          name: _personName.text,
-                          password: _password.text,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Person created!')),
-                        );
-                      },
-                    ),
-
-                    AuthInProgress() => CircularProgressIndicator(),
-                    AuthFailure(:final error) => ElevatedButton(
-                      child: Text('Create!'),
-                      onPressed: () async {
-                        context.read<AuthBloc>().register(
-                          email: _email.text,
-                          name: _personName.text,
-                          password: _password.text,
-                        );
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text(error)));
-                      },
-                    ),
-                  };
+              BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthSuccess) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => LoginApp()),
+                    );
+                  } else if (state is AuthFailure) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(state.error)));
+                  }
                 },
+                child: BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return switch (state) {
+                      AuthInitial() ||
+                      AuthNotAuth() ||
+                      AuthSuccess() => ElevatedButton(
+                        child: Text('Create!'),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            context.read<AuthBloc>().register(
+                              email: _email.text,
+                              name: _personName.text,
+                              password: _password.text,
+                            );
+                          }
+                        },
+                      ),
+                      AuthInProgress() => CircularProgressIndicator(),
+                      AuthFailure() => ElevatedButton(
+                        child: Text('Create!'),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            context.read<AuthBloc>().register(
+                              email: _email.text,
+                              name: _personName.text,
+                              password: _password.text,
+                            );
+                          }
+                        },
+                      ),
+                    };
+                  },
+                ),
               ),
             ],
           ),
