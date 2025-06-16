@@ -18,6 +18,7 @@ class ParkingHttpRepository {
       "starttime": parking.starttime,
       "endtime": parking.endtime,
       "totalprice": parking.totalprice,
+      "parkingspace": parking.parkingspace,
     });
     return parking;
   }
@@ -34,29 +35,29 @@ class ParkingHttpRepository {
   }
 
   Future<List<Parking>> getAll() async {
-   final snapshot =
+    final snapshot =
         await FirebaseFirestore.instance.collection("parking").get();
 
     return snapshot.docs.map((doc) => Parking.fromJson(doc.data())).toList();
   }
 
- // Future<Parking> update(int id, Parking parking) async {
-   // await Future.delayed(Duration(seconds: 1));
-    //final uri = Uri.parse("${getBaseUrl()}/parkings/$id");
+  // Future<Parking> update(int id, Parking parking) async {
+  // await Future.delayed(Duration(seconds: 1));
+  //final uri = Uri.parse("${getBaseUrl()}/parkings/$id");
 
-   // Response response = await http.put(
-    //  uri,
-    //  headers: {'Content-Type': 'application/json'},
-    //  body: jsonEncode(parking.toJson()),
-    //);
+  // Response response = await http.put(
+  //  uri,
+  //  headers: {'Content-Type': 'application/json'},
+  //  body: jsonEncode(parking.toJson()),
+  //);
 
-   // final json = jsonDecode(response.body);
+  // final json = jsonDecode(response.body);
 
-   // return Parking.fromJson(json);
- // }
+  // return Parking.fromJson(json);
+  // }
 
   Future<Future<Parking>> delete(String id) async {
-   final parking = getById(id);
+    final parking = getById(id);
     await FirebaseFirestore.instance.collection("parking").doc(id).delete();
     return parking;
   }
