@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/auth/auth_bloc.dart';
 import 'package:flutter_app/bloc/parking/parking_bloc.dart';
@@ -9,13 +12,83 @@ import 'package:flutter_app/repositories/ParkingHttpRepository.dart';
 import 'package:flutter_app/repositories/VehicleHttpRepository.dart';
 import 'package:flutter_app/repositories/ParkingSpaceHttpRepository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:uuid/uuid.dart';
 import 'views/landing_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
+
+Future<void> _configureLocalTimeZone() async {
+  if (kIsWeb || Platform.isLinux) {
+    return;
+  }
+  tz.initializeTimeZones();
+  if (Platform.isWindows) {
+    return;
+  }
+  final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+  tz.setLocalLocation(tz.getLocation(timeZoneName));
+}
+
+Future<FlutterLocalNotificationsPlugin> initializeNotifications() async {
+  var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  var initializationSettingsAndroid = const AndroidInitializationSettings(
+    '@mipmap/ic_launcher',
+  );
+  var initializationSettingsIOS = const DarwinInitializationSettings();
+  const WindowsInitializationSettings initializationSettingsWindows =
+      WindowsInitializationSettings(
+        appName: 'STI App', // Your app name, sync msix installer in pubspec
+        appUserModelId: 'Com.Example.App',
+        guid: 'TODO',
+      );
+  var initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+    windows: initializationSettingsWindows,
+  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  await _configureLocalTimeZone();
+  return flutterLocalNotificationsPlugin;
+}
+
+Future<void> requestPermissions() async {
+  if (Platform.isIOS) {
+    final impl =
+        flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >();
+    await impl?.requestPermissions(alert: true, badge: true, sound: true);
+  }
+  if (Platform.isMacOS) {
+    final impl =
+        flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin
+            >();
+    await impl?.requestPermissions(alert: true, badge: true, sound: true);
+  }
+  if (Platform.isAndroid) {
+    final impl =
+        flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+    await impl?.requestNotificationsPermission();
+  }
+}
+
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  flutterLocalNotificationsPlugin = await initializeNotifications();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await requestPermissions();
   runApp(LoginApp());
 }
 
@@ -42,7 +115,9 @@ class LoginApp extends StatelessWidget {
                   ParkingspaceBloc(repo: ParkingSpaceHttpRepository())
                     ..add(LoadParkingspaces()),
         ),
-        BlocProvider(create: (context) => AuthBloc(repo: PersonHttpRepository())),
+        BlocProvider(
+          create: (context) => AuthBloc(repo: PersonHttpRepository()),
+        ),
       ],
       child: MaterialApp(
         title: 'Simple Login',
@@ -64,6 +139,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   late String name;
+
 
   void _login() {
     if (_formKey.currentState!.validate()) {
@@ -128,7 +204,27 @@ class _LoginPageState extends State<LoginPage> {
                     ElevatedButton(onPressed: _login, child: Text('Login')),
                     SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+
+                        var androidDetails = AndroidNotificationDetails(
+                          'channel_id', // Required
+                          'channel_name', // Required
+                          channelDescription: 'Your channel description',
+                          importance: Importance.max,
+                          priority: Priority.high,
+                        );
+
+                        var notificationDetails = NotificationDetails(
+                          android: androidDetails,
+                        );
+
+                        await flutterLocalNotificationsPlugin.show(
+                          0,
+                          'zainab',
+                          'hejsan!',
+                          notificationDetails,
+                        );  
+
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) => createPersonPage()),
                         );
