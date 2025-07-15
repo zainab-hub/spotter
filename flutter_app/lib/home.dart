@@ -55,32 +55,7 @@ Future<FlutterLocalNotificationsPlugin> initializeNotifications() async {
   return flutterLocalNotificationsPlugin;
 }
 
-Future<void> requestPermissions() async {
-  if (Platform.isIOS) {
-    final impl =
-        flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin
-            >();
-    await impl?.requestPermissions(alert: true, badge: true, sound: true);
-  }
-  if (Platform.isMacOS) {
-    final impl =
-        flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin
-            >();
-    await impl?.requestPermissions(alert: true, badge: true, sound: true);
-  }
-  if (Platform.isAndroid) {
-    final impl =
-        flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >();
-    await impl?.requestNotificationsPermission();
-  }
-}
+
 
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -88,7 +63,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   flutterLocalNotificationsPlugin = await initializeNotifications();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await requestPermissions();
   runApp(LoginApp());
 }
 
@@ -105,9 +79,11 @@ class LoginApp extends StatelessWidget {
         ),
         BlocProvider(
           create:
-              (context) =>
-                  ParkingBloc(repo: ParkingHttpRepository())
-                    ..add(LoadParkings()),
+              (context) => ParkingBloc(
+                repo: ParkingHttpRepository(),
+                flutterLocalNotificationsPlugin:
+                    flutterLocalNotificationsPlugin,
+              )..add(LoadParkings()),
         ),
         BlocProvider(
           create:
@@ -139,7 +115,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   late String name;
-
 
   void _login() {
     if (_formKey.currentState!.validate()) {
@@ -205,26 +180,6 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () async {
-
-                        var androidDetails = AndroidNotificationDetails(
-                          'channel_id', // Required
-                          'channel_name', // Required
-                          channelDescription: 'Your channel description',
-                          importance: Importance.max,
-                          priority: Priority.high,
-                        );
-
-                        var notificationDetails = NotificationDetails(
-                          android: androidDetails,
-                        );
-
-                        await flutterLocalNotificationsPlugin.show(
-                          0,
-                          'zainab',
-                          'hejsan!',
-                          notificationDetails,
-                        );  
-
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) => createPersonPage()),
                         );
