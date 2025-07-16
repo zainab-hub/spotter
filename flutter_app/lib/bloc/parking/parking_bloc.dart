@@ -1,4 +1,7 @@
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
+//import 'dart:nativewrappers/_internal/vm/lib/math_patch.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,33 +68,51 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
   }
 
   void createNotification(Parking parking) async {
-   await requestPermissions();
+    await requestPermissions();
     var when = tz.TZDateTime.fromMillisecondsSinceEpoch(
       tz.local,
       parking.endtime,
     );
 
-    var androidDetails = AndroidNotificationDetails(
-      parking.id, // Required
-      'parking', // Required
-      channelDescription: 'parking channel',
-      importance: Importance.max,
-      priority: Priority.high,
-      when: when.millisecondsSinceEpoch,
-      usesChronometer: true,
-      chronometerCountDown: true,
-    );
-
-    var notificationDetails = NotificationDetails(android: androidDetails);
-    
     var formatedWhen = DateFormat.Hm().format(when);
 
+    var id = Random().nextInt(10000)+1;
+    var id2 = Random().nextInt(10000)+1;
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
+      id,
       'Parking',
       'Your will parking end in $formatedWhen!',
       when.add(Duration(minutes: -10)),
-      notificationDetails,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          parking.id, // Required
+          'parking', // Required
+          channelDescription: 'parking channel',
+          importance: Importance.max,
+          priority: Priority.high,
+          when: when.millisecondsSinceEpoch,
+          usesChronometer: true,
+          chronometerCountDown: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id2,
+      'Parking ended',
+      'Your parking time has ended.',
+      when,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          parking.id,
+          'parking',
+          channelDescription: 'parking channel',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }

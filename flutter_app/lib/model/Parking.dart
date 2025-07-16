@@ -22,7 +22,7 @@ class Parking {
   //Auto generat id
   factory Parking.create(vehicle, parkingspace, starttime, endtime, totalprice) {
     return Parking(
-      DateTime.now().microsecondsSinceEpoch.toString(),
+      DateTime.now().millisecondsSinceEpoch.toString(),
       vehicle,
       parkingspace,
       starttime,
