@@ -69,12 +69,12 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
 
   void createNotification(Parking parking) async {
     await requestPermissions();
-    var when = tz.TZDateTime.fromMillisecondsSinceEpoch(
+    var parkingEndTime = tz.TZDateTime.fromMillisecondsSinceEpoch(
       tz.local,
       parking.endtime,
     );
 
-    var formatedWhen = DateFormat.Hm().format(when);
+    var formatedWhen = DateFormat.Hm().format(parkingEndTime);
 
     var id = Random().nextInt(10000)+1;
     var id2 = Random().nextInt(10000)+1;
@@ -83,7 +83,7 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
       id,
       'Parking',
       'Your will parking end in $formatedWhen!',
-      when.add(Duration(minutes: -10)),
+      parkingEndTime.add(Duration(minutes: -10)),
       NotificationDetails(
         android: AndroidNotificationDetails(
           parking.id, // Required
@@ -91,7 +91,7 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
           channelDescription: 'parking channel',
           importance: Importance.max,
           priority: Priority.high,
-          when: when.millisecondsSinceEpoch,
+          when: parkingEndTime.millisecondsSinceEpoch,
           usesChronometer: true,
           chronometerCountDown: true,
         ),
@@ -103,7 +103,7 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
       id2,
       'Parking ended',
       'Your parking time has ended.',
-      when,
+      parkingEndTime,
       NotificationDetails(
         android: AndroidNotificationDetails(
           parking.id,
